@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Crea tu cuenta en el Sistema de Gestión del Gimnasio Universitario UNAM con tu código universitario.">
+    <title>Registro — Gimnasio UNAM</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #818cf8;
+            --success: #10b981;
+            --error: #ef4444;
+            --bg-from: #0f172a;
+            --bg-to: #1e1b4b;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --input-focus: #4f46e5;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--bg-from) 0%, var(--bg-to) 100%);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+        }
+
+        body::before,
+        body::after {
+            content: '';
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.2;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::before {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, #4f46e5, transparent);
+            top: -150px;
+            right: -100px;
+        }
+
+        body::after {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, #7c3aed, transparent);
+            bottom: -100px;
+            left: -100px;
+        }
+
+        /* ── Tarjeta ───────────────────────────────────────── */
+        .card {
+            position: relative;
+            z-index: 1;
+            background: var(--card-bg);
+            border-radius: 1.25rem;
+            padding: 2.5rem 2.5rem 2.25rem;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+            animation: slideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(28px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── Marca ─────────────────────────────────────────── */
+        .brand {
+            text-align: center;
+            margin-bottom: 1.75rem;
+        }
+
+        .brand-icon {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            filter: drop-shadow(0 4px 8px rgba(79, 70, 229, 0.4));
+        }
+
+        .brand h1 {
+            font-size: 1.375rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -0.02em;
+        }
+
+        .brand p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+
+        /* ── Alerta de error ───────────────────────────────── */
+        .alert {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.625rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 1.25rem;
+            animation: fadeIn 0.3s ease;
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .alert-icon {
+            font-size: 1rem;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* ── Grilla de dos columnas ────────────────────────── */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0 1rem;
+        }
+
+        /* ── Campos ────────────────────────────────────────── */
+        .field {
+            margin-bottom: 1rem;
+        }
+
+        .field label {
+            display: block;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.35rem;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 0.7rem 0.9rem;
+            border: 1.5px solid var(--border);
+            border-radius: 0.625rem;
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            background: #f8fafc;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+            outline: none;
+            appearance: none;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: var(--input-focus);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+        }
+
+        .field input::placeholder {
+            color: #94a3b8;
+        }
+
+        .field select {
+            cursor: pointer;
+        }
+
+        .field select option[value=""] {
+            color: #94a3b8;
+        }
+
+        /* Wrapper para campo contraseña con ojo */
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            padding-right: 2.75rem;
+        }
+
+        .toggle-pw {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--text-muted);
+            padding: 0;
+            transition: color 0.2s;
+        }
+
+        .toggle-pw:hover {
+            color: var(--primary);
+        }
+
+        /* Barra de fortaleza de contraseña */
+        .pw-strength {
+            margin-top: 0.4rem;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--border);
+            overflow: hidden;
+        }
+
+        .pw-strength-bar {
+            height: 100%;
+            width: 0;
+            border-radius: 2px;
+            transition: width 0.3s, background 0.3s;
+        }
+
+        .pw-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+        }
+
+        /* ── Separador de sección ──────────────────────────── */
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin: 1.25rem 0 0.75rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* ── Botón ─────────────────────────────────────────── */
+        .btn-primary {
+            display: block;
+            width: 100%;
+            padding: 0.8rem;
+            margin-top: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.625rem;
+            cursor: pointer;
+            letter-spacing: 0.01em;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+        }
+
+        /* ── Enlace inferior ───────────────────────────────── */
+        .footer-link {
+            text-align: center;
+            margin-top: 1.4rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .footer-link a {
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-link a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* ── Rol badges ────────────────────────────────────── */
+        .rol-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .rol-option {
+            display: none;
+        }
+
+        .rol-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.35rem;
+            padding: 0.85rem 0.5rem;
+            border: 1.5px solid var(--border);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: #f8fafc;
+            transition: border-color 0.2s, background 0.2s, color 0.2s, box-shadow 0.2s;
+            user-select: none;
+        }
+
+        .rol-label span.rol-icon {
+            font-size: 1.5rem;
+        }
+
+        .rol-option:checked+.rol-label {
+            border-color: var(--primary);
+            background: #eef2ff;
+            color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+        }
+    </style>
+</head>
+
+<body>
+    <main class="card" role="main">
+        <!-- Marca -->
+        <div class="brand">
+            <span class="brand-icon">🏋️</span>
+            <h1>Crear Cuenta</h1>
+            <p>Gimnasio Universitario UNAM</p>
+        </div>
+        <!-- Mensaje de error del servidor -->
+        <% if (error) { %>
+            <div class="alert" role="alert" id="serverError">
+                <span class="alert-icon">⚠</span>
+                <span>
+                    <%= error %>
+                </span>
+            </div>
+            <% } %>
+                <form action="/registro" method="POST" id="registroForm" novalidate>
+                    <!-- Sección: Datos personales -->
+                    <p class="section-label">Datos personales</p>
+                    <div class="grid-2">
+                        <div class="field">
+                            <label for="nombres">Nombres</label>
+                            <input type="text" id="nombres" name="nombres" placeholder="Ana María" required>
+                        </div>
+                        <div class="field">
+                            <label for="apellidos">Apellidos</label>
+                            <input type="text" id="apellidos" name="apellidos" placeholder="García López" required>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="correo">Correo electrónico</label>
+                        <input type="email" id="correo" name="correo" placeholder="ana@unam.mx" autocomplete="email"
+                            required>
+                    </div>
+                    <div class="field">
+                        <label for="codigo">Código Universitario</label>
+                        <input type="text" id="codigo" name="codigo" placeholder="Ej. 2021150001" maxlength="20"
+                            autocomplete="username" required>
+                    </div>
+                    <!-- Sección: Rol -->
+                    <p class="section-label">Tipo de usuario</p>
+                    <div class="rol-group">
+                        <div>
+                            <input type="radio" name="rol" id="rolEstudiante" value="ESTUDIANTE" class="rol-option"
+                                required>
+                            <label for="rolEstudiante" class="rol-label">
+                                <span class="rol-icon">🎓</span>
+                                Estudiante
+                            </label>
+                        </div>
+                        <div>
+                            <input type="radio" name="rol" id="rolDocente" value="DOCENTE" class="rol-option">
+                            <label for="rolDocente" class="rol-label">
+                                <span class="rol-icon">👨‍🏫</span>
+                                Docente
+                            </label>
+                        </div>
+                    </div>
+                    <!-- Sección: Contraseña -->
+                    <p class="section-label">Seguridad</p>
+                    <div class="field">
+                        <label for="password">Contraseña</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="password" name="password" placeholder="Mínimo 8 caracteres"
+                                autocomplete="new-password" required>
+                            <button type="button" class="toggle-pw" id="togglePw1"
+                                aria-label="Mostrar u ocultar contraseña">👁</button>
+                        </div>
+                        <div class="pw-strength" aria-hidden="true">
+                            <div class="pw-strength-bar" id="pwBar"></div>
+                        </div>
+                        <p class="pw-hint" id="pwHint">Usa letras, números y símbolos para mayor seguridad.</p>
+                    </div>
+                    <div class="field">
+                        <label for="confirmar_password">Confirmar Contraseña</label>
+                        <div class="input-wrapper">
+                            <input type="password" id="confirmar_password" name="confirmar_password"
+                                placeholder="Repite tu contraseña" autocomplete="new-password" required>
+                            <button type="button" class="toggle-pw" id="togglePw2"
+                                aria-label="Mostrar u ocultar contraseña de confirmación">👁</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary" id="btnRegistro">Crear Cuenta</button>
+                </form>
+                <p class="footer-link">¿Ya tienes cuenta? <a href="/login" id="linkLogin">Inicia sesión aquí</a></p>
+    </main>
+    <script>
+        // ── Mostrar / ocultar contraseñas ────────────────────
+        function setupToggle(btnId, inputId) {
+            document.getElementById(btnId).addEventListener('click', function () {
+                const inp = document.getElementById(inputId);
+                const isHidden = inp.type === 'password';
+                inp.type = isHidden ? 'text' : 'password';
+                this.textContent = isHidden ? '🙈' : '👁';
+            });
+        }
+        setupToggle('togglePw1', 'password');
+        setupToggle('togglePw2', 'confirmar_password');
+        // ── Barra de fortaleza de contraseña ─────────────────
+        const pwInput = document.getElementById('password');
+        const pwBar = document.getElementById('pwBar');
+        const pwHint = document.getElementById('pwHint');
+        pwInput.addEventListener('input', function () {
+            const val = this.value;
+            let score = 0;
+            if (val.length >= 8) score++;
+            if (/[A-Z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+            const levels = [
+                { width: '0%', color: '#e2e8f0', label: '' },
+                { width: '25%', color: '#ef4444', label: 'Muy débil' },
+                { width: '50%', color: '#f97316', label: 'Débil' },
+                { width: '75%', color: '#eab308', label: 'Aceptable' },
+                { width: '100%', color: '#10b981', label: 'Fuerte' },
+            ];
+            const level = levels[score] ?? levels[0];
+            pwBar.style.width = level.width;
+            pwBar.style.background = level.color;
+            pwHint.textContent = level.label || 'Usa letras, números y símbolos para mayor seguridad.';
+            pwHint.style.color = level.color !== '#e2e8f0' ? level.color : '#64748b';
+        });
+        // ── Validación del lado cliente ───────────────────────
+        document.getElementById('registroForm').addEventListener('submit', function (e) {
+            const campos = ['nombres', 'apellidos', 'correo', 'codigo', 'password', 'confirmar_password'];
+            const vacios = campos.some(id => !document.getElementById(id).value.trim());
+            const rolSel = document.querySelector('input[name="rol"]:checked');
+            let msg = null;
+            if (vacios || !rolSel) msg = 'Por favor, completa todos los campos.';
+            else if (document.getElementById('password').value !== document.getElementById('confirmar_password').value)
+                msg = 'Las contraseñas no coinciden.';
+            else if (document.getElementById('password').value.length < 8)
+                msg = 'La contraseña debe tener al menos 8 caracteres.';
+            if (msg) {
+                e.preventDefault();
+                // Eliminar alerta previa del cliente si existe
+                const prev = document.getElementById('clientError');
+                if (prev) prev.remove();
+                const alert = document.createElement('div');
+                alert.id = 'clientError';
+                alert.className = 'alert';
+                alert.setAttribute('role', 'alert');
+                alert.innerHTML = `<span class="alert-icon">⚠</span><span>${msg}</span>`;
+                document.getElementById('registroForm').insertAdjacentElement('beforebegin', alert);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+    </script>
+</body>
+
+</html>

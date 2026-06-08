@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="Inicia sesión en el Sistema de Gestión del Gimnasio Universitario UNAM con tu código universitario.">
+  <title>Iniciar Sesión — Gimnasio UNAM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #3730a3;
+      --primary-light: #818cf8;
+      --success: #10b981;
+      --error: #ef4444;
+      --bg-from: #0f172a;
+      --bg-to: #1e1b4b;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --input-focus: #4f46e5;
+    }
+
+    html,
+    body {
+      height: 100%;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--bg-from) 0%, var(--bg-to) 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    /* Orbes decorativos en el fondo */
+    body::before,
+    body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.25;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::before {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, #4f46e5, transparent);
+      top: -150px;
+      left: -150px;
+    }
+
+    body::after {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #7c3aed, transparent);
+      bottom: -100px;
+      right: -100px;
+    }
+
+    /* ── Tarjeta principal ─────────────────────────────── */
+    .card {
+      position: relative;
+      z-index: 1;
+      background: var(--card-bg);
+      border-radius: 1.25rem;
+      padding: 2.75rem 2.5rem 2.25rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+      animation: slideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(28px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── Marca / Logo ──────────────────────────────────── */
+    .brand {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .brand-icon {
+      font-size: 2.75rem;
+      line-height: 1;
+      margin-bottom: 0.6rem;
+      display: block;
+      filter: drop-shadow(0 4px 8px rgba(79, 70, 229, 0.4));
+    }
+
+    .brand h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+
+    .brand p {
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+      font-weight: 400;
+    }
+
+    /* ── Alertas ───────────────────────────────────────── */
+    .alert {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.625rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 1.25rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .alert-error {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+
+    .alert-success {
+      background: #f0fdf4;
+      color: #15803d;
+      border: 1px solid #bbf7d0;
+    }
+
+    .alert-icon {
+      font-size: 1rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── Campos del formulario ─────────────────────────── */
+    .field {
+      margin-bottom: 1.1rem;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.01em;
+    }
+
+    .field input {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border: 1.5px solid var(--border);
+      border-radius: 0.625rem;
+      font-size: 0.9375rem;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-main);
+      background: #f8fafc;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      outline: none;
+    }
+
+    .field input:focus {
+      border-color: var(--input-focus);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    }
+
+    .field input::placeholder {
+      color: #94a3b8;
+    }
+
+    /* Wrapper para campo con botón de ojo */
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper input {
+      padding-right: 2.75rem;
+    }
+
+    .toggle-pw {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      padding: 0;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+
+    .toggle-pw:hover {
+      color: var(--primary);
+    }
+
+    /* ── Botón principal ───────────────────────────────── */
+    .btn-primary {
+      display: block;
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 1.5rem;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 0.625rem;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(79, 70, 229, 0.35);
+    }
+
+    /* ── Enlace inferior ───────────────────────────────── */
+    .footer-link {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .footer-link a {
+      color: var(--primary);
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-link a:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+
+    /* ── Divisor ───────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 1.5rem 0 1.25rem;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card" role="main">
+
+    <!-- Marca -->
+    <div class="brand">
+      <span class="brand-icon">🏋️</span>
+      <h1>Gimnasio UNAM</h1>
+      <p>Sistema de Gestión Deportiva</p>
+    </div>
+
+    <!-- Mensaje de éxito (post-registro) -->
+    <% if (success) { %>
+      <div class="alert alert-success" role="alert">
+        <span class="alert-icon">✓</span>
+        <span>
+          <%= success %>
+        </span>
+      </div>
+      <% } %>
+
+        <!-- Mensaje de error -->
+        <% if (error) { %>
+          <div class="alert alert-error" role="alert">
+            <span class="alert-icon">⚠</span>
+            <span>
+              <%= error %>
+            </span>
+          </div>
+          <% } %>
+
+            <!-- Formulario de login -->
+            <form action="/login" method="POST" id="loginForm" novalidate>
+
+              <div class="field">
+                <label for="codigo">Código Universitario</label>
+                <input type="text" id="codigo" name="codigo" placeholder="Ej. 2021150001" autocomplete="username"
+                  maxlength="20" required>
+              </div>
+
+              <div class="field">
+                <label for="password">Contraseña</label>
+                <div class="input-wrapper">
+                  <input type="password" id="password" name="password" placeholder="Tu contraseña"
+                    autocomplete="current-password" required>
+                  <button type="button" class="toggle-pw" id="togglePwBtn" aria-label="Mostrar u ocultar contraseña">
+                    👁
+                  </button>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-primary" id="btnLogin">
+                Iniciar Sesión
+              </button>
+            </form>
+
+            <div class="divider"></div>
+            <p class="footer-link">¿No tienes cuenta? <a href="/registro" id="linkRegistro">Regístrate aquí</a></p>
+
+  </main>
+
+  <script>
+    // Mostrar / ocultar contraseña
+    document.getElementById('togglePwBtn').addEventListener('click', function () {
+      const pw = document.getElementById('password');
+      const isHidden = pw.type === 'password';
+      pw.type = isHidden ? 'text' : 'password';
+      this.textContent = isHidden ? '🙈' : '👁';
+    });
+
+    // Validación del lado cliente antes del submit
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      const codigo = document.getElementById('codigo').value.trim();
+      const password = document.getElementById('password').value;
+
+      if (!codigo || !password) {
+        e.preventDefault();
+        // Si ya existe alerta en el DOM, no agregar otra
+        if (!document.querySelector('.alert-error')) {
+          const alert = document.createElement('div');
+          alert.className = 'alert alert-error';
+          alert.setAttribute('role', 'alert');
+          alert.innerHTML = '<span class="alert-icon">⚠</span><span>Por favor, completa todos los campos.</span>';
+          this.insertAdjacentElement('beforebegin', alert);
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
