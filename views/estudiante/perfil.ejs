@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Perfil Físico — Gimnasio UNAM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent:       #4f46e5;
+      --accent-dark:  #3730a3;
+      --bg:           #f8fafc;
+      --card:         #ffffff;
+      --text:         #1e293b;
+      --text-muted:   #64748b;
+      --border:       #e2e8f0;
+      --input-bg:     #f1f5f9;
+      --radius:       0.875rem;
+      --shadow:       0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Navbar Simple ─────────────────────────────────── */
+    .navbar {
+      background: #0f172a;
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #fff;
+      text-decoration: none;
+    }
+    .btn-back {
+      color: #cbd5e1;
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .btn-back:hover { color: #fff; }
+
+    /* ── Contenedor Formulario ─────────────────────────── */
+    .main-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+    }
+
+    .form-card {
+      background: var(--card);
+      width: 100%;
+      max-width: 600px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-header {
+      background: linear-gradient(135deg, var(--accent) 0%, #7c3aed 100%);
+      padding: 2rem 2.5rem;
+      color: #fff;
+      text-align: center;
+    }
+    .form-header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .form-header p {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .form-body {
+      padding: 2.5rem;
+    }
+
+    /* ── Alertas ───────────────────────────────────────── */
+    .alert {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+
+    /* ── Grilla y Campos ───────────────────────────────── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 480px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .field {
+      margin-bottom: 1.5rem;
+    }
+    .field label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .input-group {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-group input, 
+    .field select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 0.625rem;
+      font-size: 0.95rem;
+      font-family: 'Inter', sans-serif;
+      color: var(--text);
+      background: var(--input-bg);
+      transition: all 0.2s;
+      outline: none;
+    }
+    .field select {
+      appearance: none;
+      cursor: pointer;
+    }
+    .input-group input:focus, 
+    .field select:focus {
+      border-color: var(--accent);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+    }
+    .input-suffix {
+      position: absolute;
+      right: 1rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 500;
+      pointer-events: none;
+    }
+
+    /* ── Checkboxes para Días ──────────────────────────── */
+    .checkbox-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--input-bg);
+      padding: 0.5rem 0.85rem;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .checkbox-label input[type="checkbox"] {
+      display: none;
+    }
+    /* Estilo cuando está marcado */
+    .checkbox-label:has(input[type="checkbox"]:checked) {
+      background: var(--accent-light, #eef2ff);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ── Botones ───────────────────────────────────────── */
+    .btn-submit {
+      width: 100%;
+      padding: 0.875rem;
+      margin-top: 1rem;
+      background: var(--accent);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 0.625rem;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-submit:hover {
+      background: var(--accent-dark);
+      transform: translateY(-1px);
+    }
+    .btn-submit:active {
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" role="navigation">
+    <a href="/dashboard/estudiante" class="nav-brand">
+      <span>🏋️</span> Gimnasio UNAM
+    </a>
+    <a href="/dashboard/estudiante" class="btn-back">
+      <span>←</span> Volver al Dashboard
+    </a>
+  </nav>
+
+  <main class="main-container">
+    <div class="form-card">
+      <div class="form-header">
+        <h1>Mi Perfil Físico</h1>
+        <p>Tus datos nos ayudan a personalizar tu entrenamiento</p>
+      </div>
+      
+      <div class="form-body">
+        
+        <% if (error) { %>
+          <div class="alert" role="alert">
+            <span>⚠</span>
+            <span><%= error %></span>
+          </div>
+        <% } %>
+
+        <form action="/estudiante/perfil" method="POST">
+          
+          <div class="grid-2">
+            <!-- Peso -->
+            <div class="field">
+              <label for="peso">Peso Actual</label>
+              <div class="input-group">
+                <input 
+                  type="number" 
+                  id="peso" 
+                  name="peso" 
+                  step="0.1" 
+                  min="30" max="250"
+                  value="<%= perfil ? perfil.peso : '' %>"
+                  placeholder="Ej. 70.5" 
+                  required>
+                <span class="input-suffix">kg</span>
+              </div>
+            </div>
+
+            <!-- Altura -->
+            <div class="field">
+              <label for="altura">Altura</label>
+              <div class="input-group">
+                <input 
+                  type="number" 
+                  id="altura" 
+                  name="altura" 
+                  step="0.01" 
+                  min="1.00" max="2.50"
+                  value="<%= perfil ? perfil.altura : '' %>"
+                  placeholder="Ej. 1.75" 
+                  required>
+                <span class="input-suffix">m</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Objetivo Principal -->
+          <div class="field">
+            <label for="objetivo_principal">Objetivo Principal</label>
+            <% const objActual = perfil ? perfil.objetivo_principal : ''; %>
+            <select id="objetivo_principal" name="objetivo_principal" required>
+              <option value="" disabled <%= !objActual ? 'selected' : '' %>>Selecciona tu objetivo...</option>
+              <option value="Ganar masa muscular" <%= objActual === 'Ganar masa muscular' ? 'selected' : '' %>>💪 Ganar masa muscular</option>
+              <option value="Perder grasa corporal" <%= objActual === 'Perder grasa corporal' ? 'selected' : '' %>>🔥 Perder grasa corporal</option>
+              <option value="Mejorar condición física" <%= objActual === 'Mejorar condición física' ? 'selected' : '' %>>🏃 Mejorar condición física</option>
+              <option value="Aumentar fuerza" <%= objActual === 'Aumentar fuerza' ? 'selected' : '' %>>🏋️ Aumentar fuerza</option>
+              <option value="Mejorar resistencia" <%= objActual === 'Mejorar resistencia' ? 'selected' : '' %>>⏱️ Mejorar resistencia</option>
+              <option value="Mantener condición actual" <%= objActual === 'Mantener condición actual' ? 'selected' : '' %>>⚖️ Mantener condición actual</option>
+            </select>
+          </div>
+
+          <!-- Días Disponibles -->
+          <div class="field">
+            <label>Días disponibles para entrenar</label>
+            <div class="checkbox-group">
+              <% const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']; %>
+              <% dias.forEach(dia => { %>
+                <label class="checkbox-label">
+                  <input 
+                    type="checkbox" 
+                    name="dias" 
+                    value="<%= dia %>"
+                    <%= diasSeleccionados.includes(dia) ? 'checked' : '' %>>
+                  <%= dia %>
+                </label>
+              <% }); %>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit">Guardar Perfil</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

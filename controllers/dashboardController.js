@@ -1,4 +1,5 @@
 const usuarioModel = require('../models/usuarioModel');
+const estudianteModel = require('../models/estudianteModel');
 
 // ── Helper: saludo según la hora local del servidor ───────────────────────────
 const obtenerSaludo = () => {
@@ -24,8 +25,11 @@ const mostrarEstudiante = async (req, res) => {
       return res.redirect('/login');
     }
 
+    const perfilFisico = await estudianteModel.buscarPorIdUsuario(req.session.usuario.id_usuario);
+
     res.render('dashboard/estudiante', {
       usuario,
+      perfilFisico,
       saludo: obtenerSaludo(),
     });
 

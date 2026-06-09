@@ -3,8 +3,9 @@ const session = require('express-session');
 const path = require('path');
 
 const authRoutes = require('./routes/authRoutes');
+const estudianteRoutes = require('./routes/estudianteRoutes');
 
-const app = express();
+const app  = express();
 const PORT = process.env.PORT || 3000;
 
 // ── Motor de plantillas ──────────────────────────────────────────────────────
@@ -29,8 +30,10 @@ app.use(session({
 
 // ── Rutas ────────────────────────────────────────────────────────────────────
 app.use('/', authRoutes);
+app.use('/estudiante', estudianteRoutes);
 
 // ── Inicio del servidor ──────────────────────────────────────────────────────
+
 app.listen(PORT, () => {
   console.log('\n🏋️  Gimnasio UNAM — Servidor iniciado');
   console.log(`   → http://localhost:${PORT}\n`);
