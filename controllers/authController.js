@@ -148,7 +148,7 @@ const procesarRegistro = async (req, res) => {
     // 6. Hash de la contraseña (NUNCA se almacena en texto plano)
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
 
-    // 7. Insertar en la base de datos
+    // 7. Insertar en la base de datos (con transacción)
     await usuarioModel.crearUsuario({
       codigo: codigo.trim(),
       nombres: nombres.trim(),

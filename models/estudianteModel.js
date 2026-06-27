@@ -37,7 +37,44 @@ const upsertPerfil = async ({ id_usuario, peso, altura, objetivo_principal, dias
   return rows[0];
 };
 
+/**
+ * Obtiene la lista de estudiantes que tienen su perfil físico completo.
+ * Realiza un INNER JOIN con la tabla usuarios para obtener datos básicos.
+ * @returns {Array} Lista de estudiantes
+ */
+const obtenerEstudiantesConPerfil = async () => {
+  const query = `
+    SELECT u.codigo, u.nombres, u.apellidos, 
+           e.id_estudiante, e.objetivo_principal, e.dias_disponibles
+      FROM usuarios u
+     INNER JOIN estudiantes e ON u.id_usuario = e.id_usuario
+     WHERE u.rol = 'ESTUDIANTE' AND u.estado = true
+     ORDER BY u.nombres, u.apellidos;
+  `;
+  const { rows } = await pool.query(query);
+  return rows;
+};
+
+/**
+ * Obtiene los datos completos de un estudiante por su id_estudiante.
+ * @param {number} id_estudiante 
+ * @returns {Object|null}
+ */
+const buscarEstudianteCompleto = async (id_estudiante) => {
+  const query = `
+    SELECT u.codigo, u.nombres, u.apellidos, 
+           e.id_estudiante, e.objetivo_principal, e.dias_disponibles
+      FROM usuarios u
+     INNER JOIN estudiantes e ON u.id_usuario = e.id_usuario
+     WHERE e.id_estudiante = $1
+  `;
+  const { rows } = await pool.query(query, [id_estudiante]);
+  return rows[0] ?? null;
+};
+
 module.exports = {
   buscarPorIdUsuario,
-  upsertPerfil
+  upsertPerfil,
+  obtenerEstudiantesConPerfil,
+  buscarEstudianteCompleto
 };

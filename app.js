@@ -4,6 +4,7 @@ const path = require('path');
 
 const authRoutes = require('./routes/authRoutes');
 const estudianteRoutes = require('./routes/estudianteRoutes');
+const docenteRoutes = require('./routes/docenteRoutes');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -31,6 +32,7 @@ app.use(session({
 // ── Rutas ────────────────────────────────────────────────────────────────────
 app.use('/', authRoutes);
 app.use('/estudiante', estudianteRoutes);
+app.use('/docente', docenteRoutes);
 
 // ── Inicio del servidor ──────────────────────────────────────────────────────
 

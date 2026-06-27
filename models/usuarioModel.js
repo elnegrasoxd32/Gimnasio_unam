@@ -30,19 +30,44 @@ const codigoExiste = async (codigo) => {
 };
 
 /**
- * Inserta un nuevo usuario en la base de datos.
+ * Inserta un nuevo usuario en la base de datos usando una TRANSACCIÓN.
+ * Crea automáticamente el registro en 'estudiantes' o 'docentes' según el rol.
  * IMPORTANTE: La contraseña debe llegar ya hasheada con bcrypt desde el controlador.
  * @param {Object} datos - { codigo, nombres, apellidos, correo, passwordHash, rol }
  * @returns {Object} Usuario recién creado (sin contraseña)
  */
 const crearUsuario = async ({ codigo, nombres, apellidos, correo, passwordHash, rol }) => {
-  const { rows } = await pool.query(
-    `INSERT INTO usuarios (codigo, nombres, apellidos, correo, password, rol)
-          VALUES ($1, $2, $3, $4, $5, $6)
-     RETURNING id_usuario, codigo, nombres, apellidos, correo, rol`,
-    [codigo, nombres, apellidos, correo, passwordHash, rol]
-  );
-  return rows[0];
+  const client = await pool.connect();
+  
+  try {
+    await client.query('BEGIN');
+    
+    // 1. Insertar el usuario
+    const { rows } = await client.query(
+      `INSERT INTO usuarios (codigo, nombres, apellidos, correo, password, rol)
+            VALUES ($1, $2, $3, $4, $5, $6)
+       RETURNING id_usuario, codigo, nombres, apellidos, correo, rol`,
+      [codigo, nombres, apellidos, correo, passwordHash, rol]
+    );
+    
+    const nuevoUsuario = rows[0];
+    
+    // 2. Insertar en la tabla correspondiente según el rol
+    if (rol === 'ESTUDIANTE') {
+      await client.query('INSERT INTO estudiantes (id_usuario) VALUES ($1)', [nuevoUsuario.id_usuario]);
+    } else if (rol === 'DOCENTE') {
+      await client.query('INSERT INTO docentes (id_usuario) VALUES ($1)', [nuevoUsuario.id_usuario]);
+    }
+    
+    await client.query('COMMIT');
+    return nuevoUsuario;
+    
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
 };
 
 /**
@@ -61,5 +86,4 @@ const buscarPorId = async (id_usuario) => {
   );
   return rows[0] ?? null;
 };
-
 module.exports = { buscarPorCodigo, codigoExiste, crearUsuario, buscarPorId };

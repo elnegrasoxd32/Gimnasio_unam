@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear Rutina — Gimnasio UNAM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent:       #7c3aed;
+      --bg:           #f1f5f9;
+      --card:         #ffffff;
+      --nav:          #0f172a;
+      --text:         #1e293b;
+      --text-muted:   #64748b;
+      --border:       #e2e8f0;
+      --radius:       0.875rem;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    
+    .navbar {
+      background: var(--nav); display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 64px; color: #fff;
+    }
+    
+    .main { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .page-title { font-size: 1.5rem; font-weight: 700; color: var(--text); }
+    .btn-back { display: inline-flex; padding: 0.5rem 1rem; background: #fff; border: 1px solid var(--border); border-radius: 0.5rem; text-decoration: none; color: var(--text); font-weight: 500; }
+    
+    .card { background: var(--card); border-radius: var(--radius); box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 1.5rem; margin-bottom: 1.5rem; }
+    .card-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+    
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+    .info-item { display: flex; flex-direction: column; }
+    .info-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+    .info-value { font-size: 1rem; font-weight: 500; }
+    
+    .form-group { margin-bottom: 1.5rem; }
+    .form-label { display: block; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .form-input { width: 100%; padding: 0.6rem 1rem; border: 1px solid var(--border); border-radius: 0.5rem; font-family: inherit; font-size: 0.95rem; }
+    
+    .ejercicio-row { display: grid; grid-template-columns: 1fr 2fr 100px 100px auto; gap: 1rem; align-items: center; margin-bottom: 1rem; padding: 1rem; background: #f8fafc; border: 1px solid var(--border); border-radius: 0.5rem; }
+    @media (max-width: 768px) { .ejercicio-row { grid-template-columns: 1fr; } }
+    
+    .btn-delete { background: #fee2e2; color: #ef4444; border: 1px solid #fca5a5; padding: 0.5rem; border-radius: 0.4rem; cursor: pointer; }
+    .btn-add { background: var(--accent); color: white; border: none; padding: 0.6rem 1rem; border-radius: 0.5rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.4rem; }
+    .btn-submit { background: #10b981; color: white; border: none; padding: 0.8rem 2rem; border-radius: 0.5rem; font-weight: 600; font-size: 1rem; cursor: pointer; width: 100%; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div style="font-weight: 700;">🏋️ Gimnasio UNAM</div>
+    <div><%= usuario.nombres %> (Docente)</div>
+  </nav>
+
+  <main class="main">
+    <div class="header-actions">
+      <h1 class="page-title">📝 Crear Rutina Personalizada</h1>
+      <a href="/docente/rutinas" class="btn-back">← Volver</a>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title">Datos del Estudiante</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">Nombre</span>
+          <span class="info-value"><%= estudiante.nombres %> <%= estudiante.apellidos %></span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Código</span>
+          <span class="info-value"><%= estudiante.codigo %></span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Objetivo</span>
+          <span class="info-value"><%= estudiante.objetivo_principal %></span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Días Disponibles</span>
+          <span class="info-value"><%= estudiante.dias_disponibles %></span>
+        </div>
+      </div>
+    </div>
+
+    <form id="rutinaForm" action="/docente/rutinas/crear/<%= estudiante.id_estudiante %>" method="POST">
+      <div class="card">
+        <div class="form-group">
+          <label class="form-label" for="nombre_rutina">Nombre de la rutina</label>
+          <input type="text" id="nombre_rutina" name="nombre_rutina" class="form-input" placeholder="Ej: Rutina Hipertrofia 3 Días" required>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem;">
+          <h2 class="card-title" style="margin: 0; border: none; padding: 0;">Ejercicios de la Rutina</h2>
+          <button type="button" class="btn-add" id="btnAgregarEjercicio">➕ Agregar Ejercicio</button>
+        </div>
+
+        <div id="ejerciciosContainer">
+          <!-- Las filas dinámicas se insertarán aquí -->
+        </div>
+      </div>
+      
+      <div id="hiddenInputsContainer"></div>
+
+      <button type="submit" class="btn-submit">💾 Guardar Rutina</button>
+    </form>
+  </main>
+
+  <script>
+    const ejerciciosCatalogo = <%- JSON.stringify(ejercicios) %>;
+    const diasSemana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+    
+    const container = document.getElementById('ejerciciosContainer');
+    const form = document.getElementById('rutinaForm');
+    const hiddenContainer = document.getElementById('hiddenInputsContainer');
+    
+    let rowIndex = 0;
+
+    function agregarFila() {
+      const row = document.createElement('div');
+      row.className = 'ejercicio-row';
+      row.dataset.index = rowIndex;
+
+      // Select Día
+      let optionsDias = diasSemana.map(d => `<option value="${d}">${d}</option>`).join('');
+      
+      // Select Ejercicio agrupado
+      let optionsEjs = '<option value="">Selecciona un ejercicio...</option>';
+      let lastGroup = '';
+      ejerciciosCatalogo.forEach(ej => {
+        if (ej.grupo_muscular !== lastGroup) {
+          if (lastGroup !== '') optionsEjs += '</optgroup>';
+          optionsEjs += `<optgroup label="${ej.grupo_muscular}">`;
+          lastGroup = ej.grupo_muscular;
+        }
+        optionsEjs += `<option value="${ej.id_ejercicio}">${ej.nombre}</option>`;
+      });
+      if (lastGroup !== '') optionsEjs += '</optgroup>';
+
+      row.innerHTML = `
+        <div>
+          <label class="form-label">Día</label>
+          <select class="form-input input-dia" required>
+            ${optionsDias}
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Ejercicio</label>
+          <select class="form-input input-ej" required>
+            ${optionsEjs}
+          </select>
+        </div>
+        <div>
+          <label class="form-label">Series</label>
+          <input type="number" class="form-input input-series" value="3" min="1" required>
+        </div>
+        <div>
+          <label class="form-label">Reps</label>
+          <input type="number" class="form-input input-reps" value="10" min="1" required>
+        </div>
+        <div style="align-self: end;">
+          <button type="button" class="btn-delete" onclick="this.parentElement.parentElement.remove()">🗑️</button>
+        </div>
+      `;
+      
+      container.appendChild(row);
+      rowIndex++;
+    }
+
+    document.getElementById('btnAgregarEjercicio').addEventListener('click', agregarFila);
+    
+    // Agregar una fila inicial
+    agregarFila();
+
+    form.addEventListener('submit', function(e) {
+      // Limpiar inputs ocultos
+      hiddenContainer.innerHTML = '';
+      
+      const rows = container.querySelectorAll('.ejercicio-row');
+      if (rows.length === 0) {
+        e.preventDefault();
+        alert('Debes agregar al menos un ejercicio a la rutina.');
+        return;
+      }
+
+      rows.forEach(row => {
+        const dia = row.querySelector('.input-dia').value;
+        const ej = row.querySelector('.input-ej').value;
+        const series = row.querySelector('.input-series').value;
+        const reps = row.querySelector('.input-reps').value;
+        
+        if (ej) {
+          const obj = {
+            dia_semana: dia,
+            id_ejercicio: ej,
+            series: series,
+            repeticiones: reps
+          };
+          
+          const input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'ejercicios';
+          input.value = JSON.stringify(obj);
+          hiddenContainer.appendChild(input);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
