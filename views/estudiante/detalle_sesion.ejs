@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle de Sesión — Gimnasio UNAM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent:       #4f46e5;
+      --bg:           #f1f5f9;
+      --card:         #ffffff;
+      --nav:          #0f172a;
+      --text:         #1e293b;
+      --text-muted:   #64748b;
+      --border:       #e2e8f0;
+      --radius:       0.875rem;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    
+    .navbar { background: var(--nav); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; color: #fff; }
+    
+    .main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .page-title { font-size: 1.5rem; font-weight: 700; color: var(--text); }
+    .btn-back { display: inline-flex; padding: 0.5rem 1rem; background: #fff; border: 1px solid var(--border); border-radius: 0.5rem; text-decoration: none; color: var(--text); font-weight: 500; }
+    
+    .card { background: var(--card); border-radius: var(--radius); box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden; margin-bottom: 1.5rem; }
+    
+    .table-container { width: 100%; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { background: #f8fafc; padding: 1rem 1.5rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+    td { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background-color: #f8fafc; }
+    
+    .cell-ejercicio { font-weight: 600; color: var(--text); }
+    .cell-serie { font-size: 0.9rem; color: var(--text-muted); }
+    .cell-valor { font-weight: 700; color: var(--accent); }
+    .cell-fecha { font-size: 0.8rem; color: var(--text-muted); }
+
+    .empty-state { text-align: center; padding: 4rem 2rem; }
+    .empty-state p { color: var(--text-muted); font-size: 1rem; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div style="font-weight: 700;">🏋️ Gimnasio UNAM</div>
+    <div><%= usuario.nombres %> (Estudiante)</div>
+  </nav>
+
+  <main class="main">
+    <div class="header-actions">
+      <h1 class="page-title">🔍 Detalle de Entrenamiento</h1>
+      <a href="/estudiante/historial" class="btn-back">← Volver al Historial</a>
+    </div>
+
+    <div class="card">
+      <% if (!registros || registros.length === 0) { %>
+        <div class="empty-state">
+          <p>No se guardaron registros para esta sesión.</p>
+        </div>
+      <% } else { %>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Ejercicio</th>
+                <th>Serie</th>
+                <th>Peso Utilizado</th>
+                <th>Repeticiones</th>
+                <th>Fecha de Registro</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% registros.forEach(reg => { %>
+                <tr id="row-<%= reg.id_registro %>">
+                  <td class="cell-ejercicio"><%= reg.nombre_ejercicio %></td>
+                  <td class="cell-serie">Serie <%= reg.numero_serie %></td>
+                  <td class="cell-valor">
+                    <span class="view-mode"><%= reg.peso %></span>
+                    <input type="number" class="edit-mode" name="peso" value="<%= reg.peso %>" style="display:none; width: 60px;" min="0" step="0.5"> kg
+                  </td>
+                  <td class="cell-valor">
+                    <span class="view-mode"><%= reg.repeticiones_realizadas %></span>
+                    <input type="number" class="edit-mode" name="reps" value="<%= reg.repeticiones_realizadas %>" style="display:none; width: 60px;" min="0">
+                  </td>
+                  <td class="cell-fecha">
+                    <%= new Date(reg.fecha_registro).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }) %>
+                  </td>
+                  <td>
+                    <button class="btn-action view-mode" onclick="toggleEdit(<%= reg.id_registro %>, true)">✏️ Editar</button>
+                    <button class="btn-action btn-danger view-mode" onclick="eliminarRegistro(<%= reg.id_registro %>)">🗑 Eliminar</button>
+                    <button class="btn-action btn-save edit-mode" onclick="guardarEdicion(<%= reg.id_registro %>)" style="display:none;">✔ Guardar</button>
+                    <button class="btn-action edit-mode" onclick="toggleEdit(<%= reg.id_registro %>, false)" style="display:none;">✖ Cancelar</button>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </main>
+
+  <script>
+    function toggleEdit(id, showEdit) {
+      const row = document.getElementById('row-' + id);
+      const views = row.querySelectorAll('.view-mode');
+      const edits = row.querySelectorAll('.edit-mode');
+      
+      views.forEach(el => el.style.display = showEdit ? 'none' : 'inline-block');
+      edits.forEach(el => el.style.display = showEdit ? 'inline-block' : 'none');
+    }
+
+    async function guardarEdicion(id) {
+      const row = document.getElementById('row-' + id);
+      const peso = parseFloat(row.querySelector('input[name="peso"]').value);
+      const reps = parseInt(row.querySelector('input[name="reps"]').value);
+
+      if (isNaN(peso) || isNaN(reps) || peso < 0 || reps < 0) {
+        alert("Valores inválidos. Asegúrate de ingresar números positivos.");
+        return;
+      }
+
+      try {
+        const res = await fetch('/estudiante/entrenamiento/registro/' + id, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ peso, repeticiones_realizadas: reps })
+        });
+        const data = await res.json();
+        
+        if (res.ok) {
+          alert(data.message);
+          // Actualizar la vista
+          row.querySelectorAll('.view-mode')[0].innerText = peso;
+          row.querySelectorAll('.view-mode')[1].innerText = reps;
+          toggleEdit(id, false);
+        } else {
+          alert(data.error || 'Error al actualizar el registro.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Error de conexión.');
+      }
+    }
+
+    async function eliminarRegistro(id) {
+      if (!confirm('¿Estás seguro de que deseas eliminar este registro?')) return;
+
+      try {
+        const res = await fetch('/estudiante/entrenamiento/registro/' + id, { method: 'DELETE' });
+        const data = await res.json();
+        
+        if (res.ok) {
+          alert(data.message);
+          
+          if (data.sesionEliminada) {
+            alert("El entrenamiento se quedó sin ejercicios y fue eliminado automáticamente.");
+            window.location.href = '/estudiante/historial';
+          } else {
+            document.getElementById('row-' + id).remove();
+          }
+        } else {
+          alert(data.error || 'Error al eliminar el registro.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Error de conexión.');
+      }
+    }
+  </script>
+
+  <style>
+    .btn-action { background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 0.3rem; padding: 0.3rem 0.5rem; cursor: pointer; font-size: 0.8rem; margin-right: 0.3rem; }
+    .btn-action:hover { background: #e2e8f0; }
+    .btn-danger { color: #ef4444; border-color: #fca5a5; background: #fef2f2; }
+    .btn-danger:hover { background: #fee2e2; }
+    .btn-save { color: #10b981; border-color: #6ee7b7; background: #ecfdf5; }
+    .btn-save:hover { background: #d1fae5; }
+  </style>
+</body>
+</html>

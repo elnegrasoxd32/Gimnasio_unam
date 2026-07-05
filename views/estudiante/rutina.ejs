@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Mi Rutina — Gimnasio Universitario UNAM">
+  <title>Mi Rutina — Gimnasio UNAM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent:       #4f46e5;
+      --accent-dark:  #3730a3;
+      --accent-light: #eef2ff;
+      --bg:           #f1f5f9;
+      --card:         #ffffff;
+      --nav:          #0f172a;
+      --text:         #1e293b;
+      --text-muted:   #64748b;
+      --border:       #e2e8f0;
+      --shadow-sm:    0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
+      --shadow:       0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05);
+      --radius:       0.875rem;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Navbar ────────────────────────────────────────── */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--nav);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #fff;
+      text-decoration: none;
+    }
+    .nav-brand span { font-size: 1.4rem; }
+    .nav-right { display: flex; align-items: center; gap: 1rem; }
+    .nav-user  { display: flex; align-items: center; gap: 0.6rem; }
+    .nav-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #6366f1);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .nav-name {
+      color: rgba(255,255,255,0.9);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .nav-role-badge {
+      background: rgba(79,70,229,0.25);
+      border: 1px solid rgba(79,70,229,0.45);
+      color: #a5b4fc;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+    }
+    .btn-logout {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 1rem;
+      background: rgba(239,68,68,0.12);
+      border: 1px solid rgba(239,68,68,0.3);
+      color: #fca5a5;
+      border-radius: 0.5rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .btn-logout:hover {
+      background: rgba(239,68,68,0.22);
+      border-color: rgba(239,68,68,0.5);
+    }
+
+    /* ── Contenido principal ───────────────────────────── */
+    .main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+    }
+
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.75rem;
+    }
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      background: #fff;
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-weight: 500;
+      font-size: 0.875rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-back:hover {
+      background: var(--bg);
+      border-color: #cbd5e1;
+    }
+
+    /* ── Tarjeta de información de rutina ───────────────── */
+    .rutina-info {
+      background: linear-gradient(135deg, var(--accent) 0%, #6366f1 100%);
+      border-radius: var(--radius);
+      padding: 1.75rem 2rem;
+      margin-bottom: 1.75rem;
+      box-shadow: 0 8px 32px rgba(79,70,229,0.25);
+      color: #fff;
+    }
+    .rutina-nombre {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .rutina-meta {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .rutina-meta-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+    .rutina-meta-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.7;
+    }
+    .rutina-meta-value {
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+    .badge-activa {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.35);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+    }
+    .badge-activa::before { content: '●'; font-size: 0.5rem; color: #4ade80; }
+
+    /* ── Sección de Día ─────────────────────────────────── */
+    .dia-section {
+      margin-bottom: 1.5rem;
+    }
+    .dia-header {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.75rem;
+    }
+    .dia-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 0.5rem;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .dia-nombre {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .dia-count {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    /* ── Ejercicio Card ─────────────────────────────────── */
+    .ejercicio-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .ejercicio-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 2px 12px rgba(79,70,229,0.1);
+    }
+    .ejercicio-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .ejercicio-nombre {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .ejercicio-grupo {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .ejercicio-stats {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    .stat-pill {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.5rem 0.85rem;
+      min-width: 70px;
+    }
+    .stat-number {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 0.15rem;
+    }
+
+    /* ── Empty State ────────────────────────────────────── */
+    .empty-state {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 4rem 2rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+    .empty-state-icon {
+      font-size: 3.5rem;
+      opacity: 0.5;
+    }
+    .empty-state h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .empty-state p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      max-width: 420px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 600px) {
+      .ejercicio-card { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+      .ejercicio-stats { width: 100%; }
+      .stat-pill { flex: 1; }
+      .rutina-meta { gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navbar ─────────────────────────────────────────── -->
+  <nav class="navbar" role="navigation" aria-label="Navegación principal">
+    <a href="/dashboard/estudiante" class="nav-brand">
+      <span>🏋️</span> Gimnasio UNAM
+    </a>
+    <div class="nav-right">
+      <div class="nav-user">
+        <div class="nav-avatar" aria-hidden="true">
+          <%= usuario.nombres.charAt(0).toUpperCase() %><%= usuario.apellidos.charAt(0).toUpperCase() %>
+        </div>
+        <span class="nav-name"><%= usuario.nombres %> <%= usuario.apellidos %></span>
+        <span class="nav-role-badge">Estudiante</span>
+      </div>
+      <a href="/logout" class="btn-logout" id="btnLogout">
+        <span>⏻</span> Salir
+      </a>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <div class="header-actions">
+      <h1 class="page-title">📋 Mi Rutina</h1>
+      <div>
+        <% if (rutina) { %>
+        <form action="/estudiante/entrenamiento/iniciar" method="POST" style="display:inline-block; margin-right: 10px;">
+          <button type="submit" class="btn-back" style="background-color: var(--accent); color: white; border: none;">
+            <span>▶️</span> Iniciar Entrenamiento
+          </button>
+        </form>
+        <% } %>
+        <a href="/dashboard/estudiante" class="btn-back"><span>←</span> Volver al Dashboard</a>
+      </div>
+    </div>
+
+    <% if (!rutina) { %>
+
+      <!-- ── Estado vacío: sin rutina ──────────────────── -->
+      <div class="empty-state">
+        <div class="empty-state-icon">📭</div>
+        <h3>Aún no tienes una rutina asignada</h3>
+        <p>Tu docente aún no te ha asignado un plan de entrenamiento. Una vez que lo haga, podrás ver aquí todos tus ejercicios organizados por día.</p>
+      </div>
+
+    <% } else { %>
+
+      <!-- ── Info de la Rutina ─────────────────────────── -->
+      <div class="rutina-info">
+        <div class="rutina-nombre"><%= rutina.nombre %></div>
+        <div class="rutina-meta">
+          <div class="rutina-meta-item">
+            <span class="rutina-meta-label">Fecha de creación</span>
+            <span class="rutina-meta-value">
+              <%= new Date(rutina.fecha_creacion).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+            </span>
+          </div>
+          <div class="rutina-meta-item">
+            <span class="rutina-meta-label">Estado</span>
+            <span class="badge-activa">Activa</span>
+          </div>
+          <div class="rutina-meta-item">
+            <span class="rutina-meta-label">Días de entrenamiento</span>
+            <span class="rutina-meta-value"><%= Object.keys(rutina.ejerciciosPorDia).length %> días</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Ejercicios por día ────────────────────────── -->
+      <% const diaIcons = { Lunes: '🟢', Martes: '🔵', 'Miércoles': '🟣', Jueves: '🟠', Viernes: '🔴', 'Sábado': '🟡', Domingo: '⚪' }; %>
+
+      <% Object.entries(rutina.ejerciciosPorDia).forEach(([dia, ejercicios]) => { %>
+        <section class="dia-section">
+          <div class="dia-header">
+            <div class="dia-icon"><%= diaIcons[dia] || '📅' %></div>
+            <div>
+              <span class="dia-nombre"><%= dia %></span>
+              <span class="dia-count"> — <%= ejercicios.length %> ejercicio<%= ejercicios.length !== 1 ? 's' : '' %></span>
+            </div>
+          </div>
+
+          <% ejercicios.forEach(ej => { %>
+            <div class="ejercicio-card">
+              <div class="ejercicio-info">
+                <span class="ejercicio-nombre"><%= ej.nombre %></span>
+                <span class="ejercicio-grupo"><%= ej.grupo_muscular %></span>
+              </div>
+              <div class="ejercicio-stats">
+                <div class="stat-pill">
+                  <span class="stat-number"><%= ej.series %></span>
+                  <span class="stat-label">Series</span>
+                </div>
+                <div class="stat-pill">
+                  <span class="stat-number"><%= ej.repeticiones %></span>
+                  <span class="stat-label">Reps</span>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </section>
+      <% }); %>
+
+    <% } %>
+
+  </main>
+
+</body>
+</html>

@@ -94,8 +94,27 @@ const crearRutina = async (req, res) => {
   }
 };
 
+/**
+ * GET /estudiante/rutina
+ * Muestra la rutina activa del estudiante autenticado.
+ */
+const verMiRutina = async (req, res) => {
+  try {
+    const rutina = await rutinaModel.obtenerRutinaActivaPorUsuario(req.session.usuario.id_usuario);
+    
+    res.render('estudiante/rutina', {
+      usuario: req.session.usuario,
+      rutina
+    });
+  } catch (err) {
+    console.error('[rutinaController] verMiRutina:', err.message);
+    res.redirect('/dashboard/estudiante');
+  }
+};
+
 module.exports = {
   listarEstudiantes,
   mostrarFormularioCrear,
-  crearRutina
+  crearRutina,
+  verMiRutina
 };
