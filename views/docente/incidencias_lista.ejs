@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Incidencias — Gimnasio UNAM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --accent: #7c3aed;
+      --accent-dark: #5b21b6;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --nav: #0f172a;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 0.875rem;
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: var(--nav);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      color: #fff;
+    }
+
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.5rem 1rem;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+
+    .btn-back:hover {
+      border-color: var(--accent);
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+    }
+
+    /* ── Filtros ─────────────────────────────────────────── */
+    .filter-bar {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-bar input,
+    .filter-bar select {
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      font-family: inherit;
+      font-size: 0.9rem;
+      color: var(--text);
+      background: #fff;
+    }
+
+    .filter-bar input {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .filter-bar select {
+      min-width: 140px;
+    }
+
+    .btn-filter {
+      padding: 0.6rem 1.25rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-filter:hover {
+      background: var(--accent-dark);
+    }
+
+    /* ── Tabla ───────────────────────────────────────────── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    td {
+      font-size: 0.9rem;
+    }
+
+    /* ── Badges ──────────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .badge-pendiente {
+      background: #fef9c3;
+      color: #854d0e;
+      border: 1px solid #fde68a;
+    }
+
+    .badge-en_proceso {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+
+    .badge-resuelto {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .btn-action {
+      display: inline-block;
+      padding: 0.4rem 0.8rem;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 0.35rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-action:hover {
+      background: var(--accent-dark);
+      transform: translateY(-1px);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 1rem;
+    }
+
+    .empty-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .empty-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 640px) {
+      .main {
+        padding: 1rem;
+      }
+
+      th,
+      td {
+        padding: 0.7rem 0.5rem;
+        font-size: 0.8rem;
+      }
+
+      .filter-bar {
+        flex-direction: column;
+      }
+
+      .filter-bar input {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div style="font-weight: 700;">🏋️ Gimnasio UNAM</div>
+    <div>
+      <%= usuario.nombres %> (Docente)
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="header-actions">
+      <h1 class="page-title">⚠️ Gestión de Incidencias</h1>
+      <a href="/dashboard/docente" class="btn-back">← Volver al Dashboard</a>
+    </div>
+
+    <div class="card">
+      <!-- ── Filtros ──────────────────────────────────── -->
+      <form class="filter-bar" method="GET" action="/docente/incidencias">
+        <input type="text" name="search" placeholder="Buscar por código o nombre del estudiante..."
+          value="<%= search %>">
+        <select name="estado">
+          <option value="" <%=estado==='' ? 'selected' : '' %>>Todos los estados</option>
+          <option value="PENDIENTE" <%=estado==='PENDIENTE' ? 'selected' : '' %>>Pendiente</option>
+          <option value="EN_PROCESO" <%=estado==='EN_PROCESO' ? 'selected' : '' %>>En proceso</option>
+          <option value="RESUELTO" <%=estado==='RESUELTO' ? 'selected' : '' %>>Resuelto</option>
+        </select>
+        <select name="orden">
+          <option value="DESC" <%=orden==='DESC' ? 'selected' : '' %>>Más recientes</option>
+          <option value="ASC" <%=orden==='ASC' ? 'selected' : '' %>>Más antiguas</option>
+        </select>
+        <button type="submit" class="btn-filter">Filtrar</button>
+        <a href="/docente/incidencias" class="btn-back" style="font-size: 0.85rem;">Limpiar</a>
+      </form>
+
+      <!-- ── Tabla ────────────────────────────────────── -->
+      <% if (incidencias && incidencias.length> 0) { %>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% incidencias.forEach(inc=> { %>
+                <tr>
+                  <td style="font-weight: 600; color: var(--accent);">
+                    <%= inc.codigo %>
+                  </td>
+                  <td>
+                    <%= inc.nombres %>
+                      <%= inc.apellidos %>
+                  </td>
+                  <td>
+                    <%= inc.tipo %>
+                  </td>
+                  <td>
+                    <% if (inc.estado==='PENDIENTE' ) { %>
+                      <span class="badge badge-pendiente">Pendiente</span>
+                      <% } else if (inc.estado==='EN_PROCESO' ) { %>
+                        <span class="badge badge-en_proceso">En Proceso</span>
+                        <% } else { %>
+                          <span class="badge badge-resuelto">Resuelto</span>
+                          <% } %>
+                  </td>
+                  <td style="white-space: nowrap;">
+                    <%= new Date(inc.fecha_reporte).toLocaleDateString('es-MX', { year: 'numeric' , month: 'short' ,
+                      day: 'numeric' }) %>
+                  </td>
+                  <td>
+                    <a href="/docente/incidencias/<%= inc.id_incidencia %>" class="btn-action">Ver detalle</a>
+                  </td>
+                </tr>
+                <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <% } else { %>
+          <div class="empty-state">
+            <span class="empty-icon">📭</span>
+            <h3 class="empty-title">Sin Resultados</h3>
+            <p class="empty-desc">No se encontraron incidencias con los filtros aplicados.</p>
+          </div>
+          <% } %>
+    </div>
+  </main>
+</body>
+
+</html>

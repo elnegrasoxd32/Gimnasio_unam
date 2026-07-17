@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recomendaciones — Gimnasio UNAM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --accent: #7c3aed;
+      --accent-dark: #5b21b6;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --nav: #0f172a;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 0.875rem;
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: var(--nav);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      color: #fff;
+    }
+
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      padding: 0.5rem 1rem;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-bar input {
+      padding: 0.6rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      flex: 1;
+    }
+
+    .btn-filter {
+      padding: 0.6rem 1.25rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      text-align: left;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+
+    td {
+      font-size: 0.95rem;
+    }
+
+    .btn-action {
+      padding: 0.4rem 0.8rem;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 0.3rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div style="font-weight: 700;">🏋️ Gimnasio UNAM</div>
+    <div>
+      <%= usuario.nombres %> (Docente)
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="header-actions">
+      <h1 class="page-title">📝 Recomendaciones</h1>
+      <a href="/dashboard/docente" class="btn-back">← Volver al Dashboard</a>
+    </div>
+
+    <div class="card">
+      <form class="filter-bar" method="GET" action="/docente/recomendaciones">
+        <input type="text" name="search" placeholder="Buscar estudiante por nombre, código o apellidos..."
+          value="<%= search %>">
+        <button type="submit" class="btn-filter">Buscar</button>
+        <a href="/docente/recomendaciones" class="btn-back" style="margin-left: 0.5rem;">Limpiar</a>
+      </form>
+
+      <% if (estudiantes && estudiantes.length> 0) { %>
+        <div style="overflow-x: auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Estudiante</th>
+                <th>Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% estudiantes.forEach(e=> { %>
+                <tr>
+                  <td style="font-weight: 600; color: var(--accent);">
+                    <%= e.codigo %>
+                  </td>
+                  <td>
+                    <%= e.nombres %>
+                      <%= e.apellidos %>
+                  </td>
+                  <td>
+                    <a href="/docente/recomendaciones/<%= e.id_estudiante %>" class="btn-action">Seleccionar</a>
+                  </td>
+                </tr>
+                <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <% } else { %>
+          <p style="color: var(--text-muted); text-align: center; padding: 2rem;">No se encontraron estudiantes.</p>
+          <% } %>
+    </div>
+  </main>
+</body>
+
+</html>

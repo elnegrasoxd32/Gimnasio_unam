@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recomendaciones — Gimnasio UNAM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --accent: #7c3aed;
+      --accent-dark: #5b21b6;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --nav: #0f172a;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 0.875rem;
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      --success: #10b981;
+      --danger: #ef4444;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: var(--nav);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      color: #fff;
+    }
+
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      padding: 0.5rem 1rem;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Summary Grid */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .summary-item {
+      padding: 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      background: #f8fafc;
+    }
+
+    .summary-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 0.2rem;
+    }
+
+    .summary-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--card);
+      padding: 1rem;
+      border-radius: var(--radius);
+      border-left: 4px solid var(--accent);
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      font-family: inherit;
+      font-size: 0.95rem;
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .btn-submit {
+      padding: 0.7rem 1.5rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Recomendaciones List */
+    .rec-card {
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .rec-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .rec-date {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .rec-body {
+      font-size: 0.95rem;
+      color: var(--text);
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
+    .rec-actions {
+      margin-top: 0.8rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-edit {
+      background: #f1f5f9;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.6rem;
+      border-radius: 0.3rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    .btn-delete {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #f87171;
+      padding: 0.3rem 0.6rem;
+      border-radius: 0.3rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    .alert-error {
+      background: #fee2e2;
+      border: 1px solid #f87171;
+      color: #b91c1c;
+    }
+
+    .alert-success {
+      background: #d1fae5;
+      border: 1px solid #34d399;
+      color: #065f46;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-bar input,
+    .filter-bar select {
+      padding: 0.6rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    .filter-bar input {
+      flex: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div style="font-weight: 700;">🏋️ Gimnasio UNAM</div>
+    <div>
+      <%= usuario.nombres %> (Docente)
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="header-actions">
+      <h1 class="page-title">Recomendar a <%= resumen.nombres %>
+      </h1>
+      <a href="/docente/recomendaciones" class="btn-back">← Volver a la lista</a>
+    </div>
+
+    <% if (error) { %>
+      <div class="alert alert-error">⚠️ <%= error %>
+      </div>
+      <% } %>
+        <% if (success) { %>
+          <div class="alert alert-success">✅ <%= success %>
+          </div>
+          <% } %>
+
+            <!-- Estadísticas del Docente -->
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-value">
+                  <%= stats.total_enviadas %>
+                </div>
+                <div class="stat-label">Total Enviadas</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">
+                  <%= stats.mes_actual %>
+                </div>
+                <div class="stat-label">Este Mes</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-value">
+                  <%= stats.hoy %>
+                </div>
+                <div class="stat-label">Hoy</div>
+              </div>
+            </div>
+
+            <!-- Resumen Estudiante -->
+            <div class="card">
+              <h2 class="card-title">📄 Resumen del Estudiante</h2>
+              <div class="summary-grid">
+                <div class="summary-item">
+                  <div class="summary-label">Código</div>
+                  <div class="summary-value">
+                    <%= resumen.codigo %>
+                  </div>
+                </div>
+                <div class="summary-item">
+                  <div class="summary-label">Nombre Completo</div>
+                  <div class="summary-value">
+                    <%= resumen.nombres %>
+                      <%= resumen.apellidos %>
+                  </div>
+                </div>
+                <div class="summary-item">
+                  <div class="summary-label">Objetivo Principal</div>
+                  <div class="summary-value">
+                    <%= resumen.objetivo_principal || 'No definido' %>
+                  </div>
+                </div>
+                <div class="summary-item">
+                  <div class="summary-label">Rutina Activa</div>
+                  <div class="summary-value">
+                    <%= resumen.rutina_activa || 'Ninguna' %>
+                  </div>
+                </div>
+                <div class="summary-item">
+                  <div class="summary-label">Última Asistencia</div>
+                  <div class="summary-value">
+                    <%= resumen.ultima_asistencia ? new Date(resumen.ultima_asistencia).toLocaleDateString('es-MX')
+                      : 'Nunca' %>
+                  </div>
+                </div>
+                <div class="summary-item">
+                  <div class="summary-label">Último Entrenamiento</div>
+                  <div class="summary-value">
+                    <%= resumen.ultimo_entrenamiento ? new
+                      Date(resumen.ultimo_entrenamiento).toLocaleDateString('es-MX') : 'Nunca' %>
+                  </div>
+                </div>
+                <div class="summary-item" style="grid-column: 1 / -1; background: #fff8f1; border-color: #ffedd5;">
+                  <div class="summary-label">Última Recomendación Enviada</div>
+                  <div class="summary-value">
+                    <%= resumen.ultima_recomendacion ? new
+                      Date(resumen.ultima_recomendacion).toLocaleDateString('es-MX') : 'Aún no tiene' %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Formulario Crear -->
+            <div class="card">
+              <h2 class="card-title">✍️ Escribir Recomendación</h2>
+              <form action="/docente/recomendaciones/<%= id_estudiante %>" method="POST">
+                <div class="form-group">
+                  <textarea name="mensaje"
+                    placeholder="Escribe tu recomendación o consejo aquí... (Min 10, Max 500 caracteres)" minlength="10"
+                    maxlength="500" required></textarea>
+                </div>
+                <button type="submit" class="btn-submit">Guardar Recomendación</button>
+              </form>
+            </div>
+
+            <!-- Historial de Recomendaciones -->
+            <div class="card">
+              <h2 class="card-title">📜 Historial de Recomendaciones</h2>
+
+              <form class="filter-bar" method="GET" action="/docente/recomendaciones/<%= id_estudiante %>">
+                <input type="text" name="search" placeholder="Buscar palabra clave en el mensaje..."
+                  value="<%= search %>">
+                <select name="sortOrder">
+                  <option value="DESC" <%=sortOrder==='DESC' ? 'selected' : '' %>>Más recientes</option>
+                  <option value="ASC" <%=sortOrder==='ASC' ? 'selected' : '' %>>Más antiguas</option>
+                </select>
+                <button type="submit" class="btn-submit" style="padding: 0.6rem 1rem;">Buscar</button>
+                <a href="/docente/recomendaciones/<%= id_estudiante %>" class="btn-back">Limpiar</a>
+              </form>
+
+              <% if (recomendaciones && recomendaciones.length> 0) { %>
+                <% recomendaciones.forEach(r=> { %>
+                  <div class="rec-card" id="rec-<%= r.id_recomendacion %>">
+                    <div class="rec-header">
+                      <span class="rec-date">
+                        <%= new Date(r.fecha).toLocaleDateString('es-MX', { weekday: 'long' , year: 'numeric' ,
+                          month: 'long' , day: 'numeric' , hour: '2-digit' , minute: '2-digit' }) %>
+                      </span>
+                    </div>
+
+                    <div class="rec-body view-mode">
+                      <%= r.mensaje %>
+                    </div>
+                    <textarea class="edit-mode" style="display:none; margin-top: 0.5rem;"
+                      rows="3"><%= r.mensaje %></textarea>
+
+                    <div class="rec-actions">
+                      <button class="btn-edit view-mode" onclick="toggleEdit(<%= r.id_recomendacion %>, true)">✏️
+                        Editar</button>
+                      <button class="btn-delete view-mode" onclick="eliminarRec(<%= r.id_recomendacion %>)">🗑
+                        Eliminar</button>
+
+                      <button class="btn-edit edit-mode"
+                        style="display:none; background:#ecfdf5; border-color:#6ee7b7; color:#10b981;"
+                        onclick="guardarEdit(<%= r.id_recomendacion %>)">✔ Guardar</button>
+                      <button class="btn-edit edit-mode" style="display:none;"
+                        onclick="toggleEdit(<%= r.id_recomendacion %>, false)">✖ Cancelar</button>
+                    </div>
+                  </div>
+                  <% }) %>
+                    <% } else { %>
+                      <p style="color: var(--text-muted);">No hay recomendaciones que coincidan con la búsqueda.</p>
+                      <% } %>
+            </div>
+  </main>
+
+  <script>
+    function toggleEdit(id, show) {
+      const card = document.getElementById('rec-' + id);
+      const views = card.querySelectorAll('.view-mode');
+      const edits = card.querySelectorAll('.edit-mode');
+      views.forEach(el => el.style.display = show ? 'none' : 'block');
+      edits.forEach(el => el.style.display = show ? 'inline-block' : 'none');
+      if (show) edits[0].style.display = 'block'; // el textarea
+    }
+
+    async function guardarEdit(id) {
+      const card = document.getElementById('rec-' + id);
+      const nuevoMensaje = card.querySelector('textarea.edit-mode').value;
+
+      if (nuevoMensaje.trim().length < 10 || nuevoMensaje.trim().length > 500) {
+        alert("El mensaje debe tener entre 10 y 500 caracteres.");
+        return;
+      }
+
+      try {
+        const res = await fetch('/docente/recomendaciones/api/' + id, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mensaje: nuevoMensaje, id_estudiante: <%= id_estudiante %> })
+      });
+      const data = await res.json();
+
+      if (res.ok) {
+        card.querySelector('.rec-body').innerText = nuevoMensaje;
+        toggleEdit(id, false);
+        alert("Recomendación actualizada.");
+      } else {
+        alert(data.error || 'Error al actualizar.');
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Error de red.");
+    }
+    }
+
+    async function eliminarRec(id) {
+      if (!confirm("¿Estás seguro de que deseas eliminar esta recomendación?")) return;
+
+      try {
+        const res = await fetch('/docente/recomendaciones/api/' + id, { method: 'DELETE' });
+        const data = await res.json();
+        if (res.ok) {
+          document.getElementById('rec-' + id).remove();
+          alert("Recomendación eliminada.");
+        } else {
+          alert(data.error || 'Error al eliminar.');
+        }
+      } catch (e) {
+        console.error(e);
+        alert("Error de red.");
+      }
+    }
+  </script>
+</body>
+
+</html>

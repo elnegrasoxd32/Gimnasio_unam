@@ -1,30 +1,39 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Dashboard del docente — Gimnasio Universitario UNAM">
-  <title><%= usuario.nombres %> — Gimnasio UNAM</title>
+  <title>
+    <%= usuario.nombres %> — Gimnasio UNAM
+  </title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
       /* Docente usa paleta violeta/esmeralda para diferenciarse del estudiante */
-      --accent:       #7c3aed;
-      --accent-dark:  #5b21b6;
+      --accent: #7c3aed;
+      --accent-dark: #5b21b6;
       --accent-light: #f5f3ff;
-      --bg:           #f1f5f9;
-      --card:         #ffffff;
-      --nav:          #0f172a;
-      --text:         #1e293b;
-      --text-muted:   #64748b;
-      --border:       #e2e8f0;
-      --shadow-sm:    0 1px 3px rgba(0,0,0,0.07), 0 1px 2px rgba(0,0,0,0.05);
-      --shadow:       0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.05);
-      --radius:       0.875rem;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --nav: #0f172a;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.07), 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.05);
+      --radius: 0.875rem;
     }
 
     body {
@@ -45,8 +54,9 @@
       justify-content: space-between;
       padding: 0 2rem;
       height: 64px;
-      box-shadow: 0 1px 0 rgba(255,255,255,0.06);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
     }
+
     .nav-brand {
       display: flex;
       align-items: center;
@@ -56,9 +66,23 @@
       color: #fff;
       text-decoration: none;
     }
-    .nav-brand span { font-size: 1.4rem; }
-    .nav-right { display: flex; align-items: center; gap: 1rem; }
-    .nav-user  { display: flex; align-items: center; gap: 0.6rem; }
+
+    .nav-brand span {
+      font-size: 1.4rem;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
     .nav-avatar {
       width: 36px;
       height: 36px;
@@ -72,14 +96,16 @@
       justify-content: center;
       flex-shrink: 0;
     }
+
     .nav-name {
-      color: rgba(255,255,255,0.9);
+      color: rgba(255, 255, 255, 0.9);
       font-size: 0.875rem;
       font-weight: 500;
     }
+
     .nav-role-badge {
-      background: rgba(124,58,237,0.25);
-      border: 1px solid rgba(124,58,237,0.45);
+      background: rgba(124, 58, 237, 0.25);
+      border: 1px solid rgba(124, 58, 237, 0.45);
       color: #c4b5fd;
       font-size: 0.7rem;
       font-weight: 700;
@@ -88,13 +114,14 @@
       padding: 0.2rem 0.6rem;
       border-radius: 999px;
     }
+
     .btn-logout {
       display: flex;
       align-items: center;
       gap: 0.4rem;
       padding: 0.45rem 1rem;
-      background: rgba(239,68,68,0.12);
-      border: 1px solid rgba(239,68,68,0.3);
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
       color: #fca5a5;
       border-radius: 0.5rem;
       font-family: 'Inter', sans-serif;
@@ -103,9 +130,10 @@
       text-decoration: none;
       transition: background 0.2s, border-color 0.2s;
     }
+
     .btn-logout:hover {
-      background: rgba(239,68,68,0.22);
-      border-color: rgba(239,68,68,0.5);
+      background: rgba(239, 68, 68, 0.22);
+      border-color: rgba(239, 68, 68, 0.5);
     }
 
     /* ── Contenido principal ───────────────────────────── */
@@ -124,10 +152,11 @@
       align-items: center;
       gap: 1.5rem;
       margin-bottom: 1.75rem;
-      box-shadow: 0 8px 32px rgba(124,58,237,0.3);
+      box-shadow: 0 8px 32px rgba(124, 58, 237, 0.3);
       position: relative;
       overflow: hidden;
     }
+
     .hero::after {
       content: '';
       position: absolute;
@@ -136,14 +165,15 @@
       width: 220px;
       height: 220px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.06);
+      background: rgba(255, 255, 255, 0.06);
     }
+
     .hero-avatar {
       width: 72px;
       height: 72px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.18);
-      border: 2px solid rgba(255,255,255,0.35);
+      background: rgba(255, 255, 255, 0.18);
+      border: 2px solid rgba(255, 255, 255, 0.35);
       color: #fff;
       font-size: 1.6rem;
       font-weight: 700;
@@ -153,15 +183,17 @@
       flex-shrink: 0;
       backdrop-filter: blur(4px);
     }
+
     .hero-text h1 {
       font-size: 1.5rem;
       font-weight: 700;
       color: #fff;
       letter-spacing: -0.02em;
     }
+
     .hero-text p {
       font-size: 0.9rem;
-      color: rgba(255,255,255,0.75);
+      color: rgba(255, 255, 255, 0.75);
       margin-top: 0.25rem;
     }
 
@@ -172,8 +204,11 @@
       gap: 1.5rem;
       align-items: start;
     }
+
     @media (max-width: 768px) {
-      .layout { grid-template-columns: 1fr; }
+      .layout {
+        grid-template-columns: 1fr;
+      }
     }
 
     /* ── Tarjetas ──────────────────────────────────────── */
@@ -183,6 +218,7 @@
       box-shadow: var(--shadow);
       overflow: hidden;
     }
+
     .card-header {
       padding: 1.1rem 1.4rem;
       border-bottom: 1px solid var(--border);
@@ -190,13 +226,20 @@
       align-items: center;
       gap: 0.6rem;
     }
+
     .card-header h2 {
       font-size: 0.875rem;
       font-weight: 700;
       color: var(--text);
     }
-    .card-header .icon { font-size: 1rem; }
-    .card-body { padding: 1.25rem 1.4rem; }
+
+    .card-header .icon {
+      font-size: 1rem;
+    }
+
+    .card-body {
+      padding: 1.25rem 1.4rem;
+    }
 
     /* ── Perfil ────────────────────────────────────────── */
     .profile-item {
@@ -206,7 +249,11 @@
       padding: 0.65rem 0;
       border-bottom: 1px solid var(--border);
     }
-    .profile-item:last-child { border-bottom: none; }
+
+    .profile-item:last-child {
+      border-bottom: none;
+    }
+
     .profile-label {
       font-size: 0.7rem;
       font-weight: 700;
@@ -214,12 +261,14 @@
       text-transform: uppercase;
       color: var(--text-muted);
     }
+
     .profile-value {
       font-size: 0.9rem;
       font-weight: 500;
       color: var(--text);
       word-break: break-word;
     }
+
     .badge-activo {
       display: inline-flex;
       align-items: center;
@@ -232,7 +281,11 @@
       padding: 0.2rem 0.65rem;
       border-radius: 999px;
     }
-    .badge-activo::before { content: '●'; font-size: 0.5rem; }
+
+    .badge-activo::before {
+      content: '●';
+      font-size: 0.5rem;
+    }
 
     /* ── Módulos ───────────────────────────────────────── */
     .section-title {
@@ -243,11 +296,13 @@
       color: var(--text-muted);
       margin-bottom: 1rem;
     }
+
     .modules-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 1rem;
     }
+
     .module-card {
       background: var(--card);
       border: 1.5px solid var(--border);
@@ -260,28 +315,36 @@
       cursor: not-allowed;
       position: relative;
     }
+
     .module-card.disponible {
       opacity: 1;
       cursor: pointer;
       box-shadow: var(--shadow-sm);
     }
+
     .module-card.disponible:hover {
       border-color: var(--accent);
-      box-shadow: 0 4px 20px rgba(124,58,237,0.18);
+      box-shadow: 0 4px 20px rgba(124, 58, 237, 0.18);
       transform: translateY(-2px);
       transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     }
-    .module-icon { font-size: 1.75rem; }
+
+    .module-icon {
+      font-size: 1.75rem;
+    }
+
     .module-name {
       font-size: 0.875rem;
       font-weight: 600;
       color: var(--text);
     }
+
     .module-desc {
       font-size: 0.775rem;
       color: var(--text-muted);
       line-height: 1.4;
     }
+
     .module-badge {
       display: inline-block;
       margin-top: auto;
@@ -291,11 +354,13 @@
       font-weight: 700;
       letter-spacing: 0.04em;
     }
+
     .badge-soon {
       background: #fef9c3;
       color: #854d0e;
       border: 1px solid #fde68a;
     }
+
     .badge-ready {
       background: var(--accent-light);
       color: var(--accent);
@@ -309,6 +374,7 @@
       gap: 1rem;
       margin-bottom: 1.5rem;
     }
+
     .stat-card {
       background: var(--card);
       border-radius: var(--radius);
@@ -317,23 +383,29 @@
       border: 1px solid var(--border);
       text-align: center;
     }
+
     .stat-number {
       font-size: 1.75rem;
       font-weight: 700;
       color: var(--accent);
       display: block;
     }
+
     .stat-label {
       font-size: 0.75rem;
       color: var(--text-muted);
       font-weight: 500;
       margin-top: 0.2rem;
     }
+
     @media (max-width: 480px) {
-      .stats-row { grid-template-columns: 1fr; }
+      .stats-row {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <!-- ── Navbar ─────────────────────────────────────────── -->
@@ -344,9 +416,13 @@
     <div class="nav-right">
       <div class="nav-user">
         <div class="nav-avatar" aria-hidden="true">
-          <%= usuario.nombres.charAt(0).toUpperCase() %><%= usuario.apellidos.charAt(0).toUpperCase() %>
+          <%= usuario.nombres.charAt(0).toUpperCase() %>
+            <%= usuario.apellidos.charAt(0).toUpperCase() %>
         </div>
-        <span class="nav-name"><%= usuario.nombres %> <%= usuario.apellidos %></span>
+        <span class="nav-name">
+          <%= usuario.nombres %>
+            <%= usuario.apellidos %>
+        </span>
         <span class="nav-role-badge">Docente</span>
       </div>
       <a href="/logout" class="btn-logout" id="btnLogout">
@@ -360,10 +436,13 @@
     <!-- ── Hero ───────────────────────────────────────────── -->
     <section class="hero" aria-label="Bienvenida docente">
       <div class="hero-avatar" aria-hidden="true">
-        <%= usuario.nombres.charAt(0).toUpperCase() %><%= usuario.apellidos.charAt(0).toUpperCase() %>
+        <%= usuario.nombres.charAt(0).toUpperCase() %>
+          <%= usuario.apellidos.charAt(0).toUpperCase() %>
       </div>
       <div class="hero-text">
-        <h1><%= saludo %>, <%= usuario.nombres %>!</h1>
+        <h1>
+          <%= saludo %>, <%= usuario.nombres %>!
+        </h1>
         <p>Panel de gestión docente — Gimnasio Universitario UNAM</p>
       </div>
     </section>
@@ -398,17 +477,24 @@
 
             <div class="profile-item">
               <span class="profile-label">Código Universitario</span>
-              <span class="profile-value"><%= usuario.codigo %></span>
+              <span class="profile-value">
+                <%= usuario.codigo %>
+              </span>
             </div>
 
             <div class="profile-item">
               <span class="profile-label">Nombre Completo</span>
-              <span class="profile-value"><%= usuario.nombres %> <%= usuario.apellidos %></span>
+              <span class="profile-value">
+                <%= usuario.nombres %>
+                  <%= usuario.apellidos %>
+              </span>
             </div>
 
             <div class="profile-item">
               <span class="profile-label">Correo Electrónico</span>
-              <span class="profile-value"><%= usuario.correo %></span>
+              <span class="profile-value">
+                <%= usuario.correo %>
+              </span>
             </div>
 
             <div class="profile-item">
@@ -419,14 +505,17 @@
             <div class="profile-item">
               <span class="profile-label">Estado de Cuenta</span>
               <span class="profile-value">
-                <span class="badge-activo"><%= usuario.estado %></span>
+                <span class="badge-activo">
+                  <%= usuario.estado %>
+                </span>
               </span>
             </div>
 
             <div class="profile-item">
               <span class="profile-label">Miembro desde</span>
               <span class="profile-value">
-                <%= new Date(usuario.fecha_registro).toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+                <%= new Date(usuario.fecha_registro).toLocaleDateString('es-MX', { year: 'numeric' , month: 'long' ,
+                  day: 'numeric' }) %>
               </span>
             </div>
 
@@ -453,12 +542,12 @@
             <span class="module-badge badge-ready">Disponible</span>
           </a>
 
-          <div class="module-card">
+          <a href="/docente/asistencias" class="module-card disponible" style="text-decoration: none;">
             <span class="module-icon">📊</span>
             <span class="module-name">Consultar Asistencia</span>
-            <span class="module-desc">Revisa el historial de asistencia de cada estudiante.</span>
-            <span class="module-badge badge-soon">Próximamente</span>
-          </div>
+            <span class="module-desc">Revisa el historial de asistencia de cada estudiante con filtros avanzados.</span>
+            <span class="module-badge badge-ready">Disponible</span>
+          </a>
 
           <div class="module-card">
             <span class="module-icon">📈</span>
@@ -467,12 +556,12 @@
             <span class="module-badge badge-soon">Próximamente</span>
           </div>
 
-          <div class="module-card">
-            <span class="module-icon">⚠️</span>
-            <span class="module-name">Gestionar Incidencias</span>
-            <span class="module-desc">Revisa y resuelve los reportes enviados por los estudiantes.</span>
-            <span class="module-badge badge-soon">Próximamente</span>
-          </div>
+          <a href="/docente/recomendaciones" class="module-card disponible" style="text-decoration: none;">
+            <span class="module-icon">📝</span>
+            <span class="module-name">Recomendaciones</span>
+            <span class="module-desc">Envía consejos y sugerencias personalizadas a tus alumnos.</span>
+            <span class="module-badge badge-ready">Disponible</span>
+          </a>
 
         </div>
       </section>
@@ -481,4 +570,5 @@
   </main>
 
 </body>
+
 </html>

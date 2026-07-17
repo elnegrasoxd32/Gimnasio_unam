@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Recomendaciones — Gimnasio UNAM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --accent: #4f46e5;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --nav: #0f172a;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 0.875rem;
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      --new-badge: #ecfdf5;
+      --new-text: #10b981;
+      --new-border: #a7f3d0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: var(--nav);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      color: #fff;
+    }
+
+    .main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      padding: 0.5rem 1rem;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+
+    .rec-card {
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .rec-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+      transition: 0.2s;
+    }
+
+    .rec-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.8rem;
+    }
+
+    .rec-docente {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .rec-date {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .rec-body {
+      font-size: 1rem;
+      color: var(--text);
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .badge-new {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      background: var(--new-badge);
+      color: var(--new-text);
+      border: 1px solid var(--new-border);
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-left: 0.5rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div style="font-weight: 700;">🏋️ Gimnasio UNAM</div>
+    <div>
+      <%= usuario.nombres %> (Estudiante)
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="header-actions">
+      <h1 class="page-title">✉️ Mis Recomendaciones</h1>
+      <a href="/dashboard/estudiante" class="btn-back">← Volver al Dashboard</a>
+    </div>
+
+    <% if (recomendaciones && recomendaciones.length> 0) { %>
+      <div class="card">
+        <% recomendaciones.forEach(r=> { %>
+          <div class="rec-card">
+            <div class="rec-header">
+              <div>
+                <div class="rec-docente">Prof. <%= r.nombres %>
+                    <%= r.apellidos %>
+                </div>
+                <div class="rec-date">
+                  <%= new Date(r.fecha).toLocaleDateString('es-MX', { weekday: 'long' , year: 'numeric' , month: 'long'
+                    , day: 'numeric' , hour: '2-digit' , minute: '2-digit' }) %>
+                </div>
+              </div>
+              <% if (r.es_nueva) { %>
+                <div class="badge-new">✨ Nueva</div>
+                <% } %>
+            </div>
+            <div class="rec-body">
+              <%= r.mensaje %>
+            </div>
+          </div>
+          <% }) %>
+      </div>
+      <% } else { %>
+        <div class="card" style="text-align: center; padding: 3rem 1rem;">
+          <span style="font-size: 3rem; display: block; margin-bottom: 1rem;">📭</span>
+          <h2 style="font-size: 1.2rem; color: var(--text); margin-bottom: 0.5rem;">Bandeja Vacía</h2>
+          <p style="color: var(--text-muted);">Aún no has recibido recomendaciones de tus docentes.</p>
+        </div>
+        <% } %>
+  </main>
+</body>
+
+</html>

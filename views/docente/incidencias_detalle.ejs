@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle de Incidencia — Gimnasio UNAM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --accent: #7c3aed;
+      --accent-dark: #5b21b6;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --nav: #0f172a;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --radius: 0.875rem;
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .navbar {
+      background: var(--nav);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      color: #fff;
+    }
+
+    .main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.5rem 1rem;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+    }
+
+    .btn-back:hover {
+      border-color: var(--accent);
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+
+    .alert-error {
+      background: #fee2e2;
+      border: 1px solid #f87171;
+      color: #b91c1c;
+    }
+
+    .alert-success {
+      background: #d1fae5;
+      border: 1px solid #34d399;
+      color: #065f46;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ── Grid de datos ───────────────────────────────────── */
+    .data-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .data-item {
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      background: #f8fafc;
+    }
+
+    .data-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.25rem;
+    }
+
+    .data-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    /* ── Descripción ─────────────────────────────────────── */
+    .desc-box {
+      padding: 1rem;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      font-size: 0.95rem;
+      color: var(--text);
+      margin-top: 1rem;
+    }
+
+    /* ── Badges ──────────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .badge-pendiente {
+      background: #fef9c3;
+      color: #854d0e;
+      border: 1px solid #fde68a;
+    }
+
+    .badge-en_proceso {
+      background: #dbeafe;
+      color: #1e40af;
+      border: 1px solid #bfdbfe;
+    }
+
+    .badge-resuelto {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    /* ── Acción de estado ────────────────────────────────── */
+    .state-action {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+    }
+
+    .state-action h3 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .state-flow {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .state-step {
+      padding: 0.3rem 0.7rem;
+      border-radius: 0.3rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .state-step.active {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .state-arrow {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .btn-state {
+      padding: 0.6rem 1.25rem;
+      color: #fff;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-state:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-en-proceso {
+      background: #2563eb;
+    }
+
+    .btn-en-proceso:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-resuelto {
+      background: #059669;
+    }
+
+    .btn-resuelto:hover {
+      background: #047857;
+    }
+
+    @media (max-width: 640px) {
+      .main {
+        padding: 1rem;
+      }
+
+      .data-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div style="font-weight: 700;">🏋️ Gimnasio UNAM</div>
+    <div>
+      <%= usuario.nombres %> (Docente)
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="header-actions">
+      <h1 class="page-title">📄 Detalle de Incidencia</h1>
+      <a href="/docente/incidencias" class="btn-back">← Volver al listado</a>
+    </div>
+
+    <% if (error) { %>
+      <div class="alert alert-error">⚠️ <%= error %>
+      </div>
+      <% } %>
+        <% if (success) { %>
+          <div class="alert alert-success">✅ <%= success %>
+          </div>
+          <% } %>
+
+            <!-- ── Datos del Estudiante ────────────────────────── -->
+            <div class="card">
+              <h2 class="card-title">👤 Información del Estudiante</h2>
+              <div class="data-grid">
+                <div class="data-item">
+                  <div class="data-label">Código</div>
+                  <div class="data-value" style="color: var(--accent);">
+                    <%= detalle.codigo %>
+                  </div>
+                </div>
+                <div class="data-item">
+                  <div class="data-label">Nombre Completo</div>
+                  <div class="data-value">
+                    <%= detalle.nombres %>
+                      <%= detalle.apellidos %>
+                  </div>
+                </div>
+                <div class="data-item">
+                  <div class="data-label">Objetivo Principal</div>
+                  <div class="data-value">
+                    <%= detalle.objetivo_principal || 'No definido' %>
+                  </div>
+                </div>
+                <div class="data-item">
+                  <div class="data-label">Rutina Activa</div>
+                  <div class="data-value">
+                    <%= detalle.rutina_activa || 'Ninguna' %>
+                  </div>
+                </div>
+                <div class="data-item">
+                  <div class="data-label">Última Asistencia</div>
+                  <div class="data-value">
+                    <%= detalle.ultima_asistencia ? new Date(detalle.ultima_asistencia).toLocaleDateString('es-MX', {
+                      year: 'numeric' , month: 'short' , day: 'numeric' }) : 'Sin registro' %>
+                  </div>
+                </div>
+                <div class="data-item">
+                  <div class="data-label">Último Entrenamiento</div>
+                  <div class="data-value">
+                    <%= detalle.ultimo_entrenamiento ? new
+                      Date(detalle.ultimo_entrenamiento).toLocaleDateString('es-MX', { year: 'numeric' , month: 'short'
+                      , day: 'numeric' }) : 'Sin registro' %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Datos de la Incidencia ──────────────────────── -->
+            <div class="card">
+              <h2 class="card-title">⚠️ Incidencia Reportada</h2>
+              <div class="data-grid">
+                <div class="data-item">
+                  <div class="data-label">Tipo</div>
+                  <div class="data-value">
+                    <%= detalle.tipo %>
+                  </div>
+                </div>
+                <div class="data-item">
+                  <div class="data-label">Estado Actual</div>
+                  <div class="data-value">
+                    <% if (detalle.estado==='PENDIENTE' ) { %>
+                      <span class="badge badge-pendiente">Pendiente</span>
+                      <% } else if (detalle.estado==='EN_PROCESO' ) { %>
+                        <span class="badge badge-en_proceso">En Proceso</span>
+                        <% } else { %>
+                          <span class="badge badge-resuelto">Resuelto</span>
+                          <% } %>
+                  </div>
+                </div>
+                <div class="data-item">
+                  <div class="data-label">Fecha del Reporte</div>
+                  <div class="data-value">
+                    <%= new Date(detalle.fecha_reporte).toLocaleDateString('es-MX', { weekday: 'long' , year: 'numeric'
+                      , month: 'long' , day: 'numeric' , hour: '2-digit' , minute: '2-digit' }) %>
+                  </div>
+                </div>
+              </div>
+
+              <div class="desc-box">
+                <%= detalle.descripcion %>
+              </div>
+
+              <!-- ── Gestión de Estado ──────────────────────────── -->
+              <% if (detalle.estado !=='RESUELTO' ) { %>
+                <div class="state-action">
+                  <h3>🔄 Cambiar Estado</h3>
+
+                  <div class="state-flow">
+                    <span
+                      class="state-step badge-pendiente <%= detalle.estado === 'PENDIENTE' ? 'active' : '' %>">Pendiente</span>
+                    <span class="state-arrow">→</span>
+                    <span class="state-step badge-en_proceso <%= detalle.estado === 'EN_PROCESO' ? 'active' : '' %>">En
+                      Proceso</span>
+                    <span class="state-arrow">→</span>
+                    <span class="state-step badge-resuelto">Resuelto</span>
+                  </div>
+
+                  <form action="/docente/incidencias/<%= detalle.id_incidencia %>/estado" method="POST"
+                    onsubmit="return confirm('¿Confirmas el cambio de estado?');">
+                    <% if (detalle.estado==='PENDIENTE' ) { %>
+                      <input type="hidden" name="nuevo_estado" value="EN_PROCESO">
+                      <button type="submit" class="btn-state btn-en-proceso">Marcar como En Proceso</button>
+                      <% } else if (detalle.estado==='EN_PROCESO' ) { %>
+                        <input type="hidden" name="nuevo_estado" value="RESUELTO">
+                        <button type="submit" class="btn-state btn-resuelto">Marcar como Resuelto</button>
+                        <% } %>
+                  </form>
+                </div>
+                <% } else { %>
+                  <div class="state-action" style="background: #ecfdf5; border-color: #a7f3d0;">
+                    <h3 style="color: #065f46;">✅ Incidencia Resuelta</h3>
+                    <p style="font-size: 0.9rem; color: #047857;">Esta incidencia ya fue atendida y cerrada.</p>
+                  </div>
+                  <% } %>
+            </div>
+  </main>
+</body>
+
+</html>
