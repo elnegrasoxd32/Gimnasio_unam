@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progreso de Alumnos — Gimnasio UNAM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent:       #7c3aed;
+      --accent-dark:  #5b21b6;
+      --bg:           #f1f5f9;
+      --card:         #ffffff;
+      --nav:          #0f172a;
+      --text:         #1e293b;
+      --text-muted:   #64748b;
+      --border:       #e2e8f0;
+      --radius:       0.875rem;
+      --shadow:       0 4px 16px rgba(0,0,0,0.08);
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    .navbar { background: var(--nav); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; color: #fff; }
+    .main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+    .page-title { font-size: 1.5rem; font-weight: 700; }
+    .btn-back { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.5rem 1rem; background: #fff; border: 1px solid var(--border); border-radius: 0.5rem; text-decoration: none; color: var(--text); font-weight: 500; font-size: 0.9rem; transition: border-color 0.2s; }
+    .btn-back:hover { border-color: var(--accent); }
+
+    .card { background: var(--card); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); margin-bottom: 2rem; }
+
+    /* ── Buscador ───────────────────────────────────────── */
+    .search-bar { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .search-input { flex: 1; max-width: 400px; padding: 0.6rem 1rem; border: 1px solid var(--border); border-radius: 0.5rem; font-family: inherit; font-size: 0.95rem; }
+    .search-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1); }
+    .btn-search { padding: 0.6rem 1.25rem; background: var(--accent); color: #fff; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+    .btn-search:hover { background: var(--accent-dark); }
+    .btn-clear { padding: 0.6rem 1rem; background: #f1f5f9; color: var(--text-muted); border: 1px solid var(--border); border-radius: 0.5rem; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+
+    /* ── Tabla ───────────────────────────────────────────── */
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 1rem; border-bottom: 1px solid var(--border); }
+    th { background: #f8fafc; font-weight: 600; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    td { font-size: 0.95rem; }
+
+    .btn-action { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.4rem 0.8rem; background: var(--accent); color: #fff; text-decoration: none; border-radius: 0.35rem; font-size: 0.8rem; font-weight: 600; transition: transform 0.15s, background 0.2s; }
+    .btn-action:hover { background: var(--accent-dark); transform: translateY(-1px); }
+
+    .badge { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; background: #e2e8f0; color: #475569; }
+    .badge-primary { background: #ede9fe; color: #5b21b6; border: 1px solid #ddd6fe; }
+
+    .empty-state { text-align: center; padding: 3rem 1rem; }
+    .empty-icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
+    .empty-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .empty-desc { color: var(--text-muted); font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .search-bar { flex-direction: column; }
+      .search-input { max-width: 100%; }
+      table { display: block; overflow-x: auto; white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div style="font-weight: 700;">🏋️ Gimnasio UNAM</div>
+    <div><%= usuario.nombres %> (Docente)</div>
+  </nav>
+
+  <main class="main">
+    <div class="header-actions">
+      <h1 class="page-title">📈 Progreso de Alumnos</h1>
+      <a href="/dashboard/docente" class="btn-back">← Volver al Dashboard</a>
+    </div>
+
+    <div class="card">
+      <form class="search-bar" method="GET" action="/docente/progreso">
+        <input type="text" name="search" class="search-input" placeholder="Buscar por código, nombre o apellido..." value="<%= search %>">
+        <button type="submit" class="btn-search">Buscar</button>
+        <% if (search) { %>
+          <a href="/docente/progreso" class="btn-clear">Limpiar</a>
+        <% } %>
+      </form>
+
+      <% if (estudiantes && estudiantes.length > 0) { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Estudiante</th>
+              <th>Objetivo</th>
+              <th>Rutina Activa</th>
+              <th>Último Entrenamiento</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% estudiantes.forEach(est => { %>
+              <tr>
+                <td style="font-weight: 600; color: var(--accent);"><%= est.codigo %></td>
+                <td style="font-weight: 500;"><%= est.nombres %> <%= est.apellidos %></td>
+                <td><span class="badge"><%= est.objetivo_principal || 'No definido' %></span></td>
+                <td>
+                  <% if (est.rutina_activa) { %>
+                    <span class="badge badge-primary"><%= est.rutina_activa %></span>
+                  <% } else { %>
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">Ninguna</span>
+                  <% } %>
+                </td>
+                <td style="color: var(--text-muted); font-size: 0.85rem;">
+                  <%= est.ultimo_entrenamiento ? new Date(est.ultimo_entrenamiento).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Sin registros' %>
+                </td>
+                <td>
+                  <a href="/docente/progreso/<%= est.id_estudiante %>" class="btn-action">📊 Ver progreso</a>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      <% } else { %>
+        <div class="empty-state">
+          <span class="empty-icon">👥</span>
+          <h3 class="empty-title">Sin Resultados</h3>
+          <p class="empty-desc">No se encontraron estudiantes que coincidan con la búsqueda.</p>
+        </div>
+      <% } %>
+    </div>
+  </main>
+</body>
+</html>

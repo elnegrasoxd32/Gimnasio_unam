@@ -41,6 +41,7 @@ const asistenciaCtrl = require('../controllers/asistenciaController');
 router.get('/asistencia', asistenciaCtrl.mostrarAsistenciaEstudiante);
 router.post('/asistencia/ingreso', asistenciaCtrl.registrarIngreso);
 router.post('/asistencia/salida', asistenciaCtrl.registrarSalida);
+router.get('/asistencia/qr-scan', asistenciaCtrl.registrarAsistenciaQR);
 
 // ── Recomendaciones ───────────────────────────────────────────────────────────
 const recomendacionCtrl = require('../controllers/recomendacionController');
@@ -50,5 +51,9 @@ router.get('/recomendaciones', recomendacionCtrl.mostrarRecomendacionesEstudiant
 const incidenciaCtrl = require('../controllers/incidenciaController');
 router.get('/incidencias', incidenciaCtrl.mostrarIncidenciasEstudiante);
 router.post('/incidencias', incidenciaCtrl.crearIncidencia);
+// ── Aforo ─────────────────────────────────────────────────────────────────────
+const aforoCtrl = require('../controllers/aforoController');
+router.get('/aforo', aforoCtrl.mostrarAforoEstudiante);
+router.get('/api/aforo', aforoCtrl.apiObtenerAforo);
 
 module.exports = router;

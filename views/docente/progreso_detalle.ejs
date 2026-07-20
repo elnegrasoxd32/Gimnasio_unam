@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Progreso de <%= estudiante.nombres %> — Gimnasio UNAM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent:       #7c3aed;
+      --accent-dark:  #5b21b6;
+      --bg:           #f1f5f9;
+      --card:         #ffffff;
+      --nav:          #0f172a;
+      --text:         #1e293b;
+      --text-muted:   #64748b;
+      --border:       #e2e8f0;
+      --radius:       0.875rem;
+      --shadow:       0 4px 16px rgba(0,0,0,0.08);
+      --success:      #10b981;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    .navbar { background: var(--nav); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; color: #fff; }
+    .main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+    .page-title { font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+    .btn-back { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.5rem 1rem; background: #fff; border: 1px solid var(--border); border-radius: 0.5rem; text-decoration: none; color: var(--text); font-weight: 500; font-size: 0.9rem; transition: border-color 0.2s; }
+    .btn-back:hover { border-color: var(--accent); }
+
+    .card { background: var(--card); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); margin-bottom: 2rem; }
+
+    /* ── Info Header ────────────────────────────────────── */
+    .student-info { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+    .info-item { padding: 0.75rem; background: #f8fafc; border: 1px solid var(--border); border-radius: 0.5rem; }
+    .info-label { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.2rem; }
+    .info-value { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+
+    /* ── Resumen de Estadísticas ────────────────────────── */
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .summary-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; display: flex; flex-direction: column; align-items: flex-start; box-shadow: var(--shadow); border-top: 4px solid var(--accent); }
+    .summary-title { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .summary-value { font-size: 1.75rem; font-weight: 700; color: var(--text); line-height: 1; }
+    .summary-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; }
+
+    /* ── Gráficas ───────────────────────────────────────── */
+    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+    .chart-card { background: var(--card); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+    .chart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
+    .chart-title { font-size: 1.05rem; font-weight: 700; color: var(--text); }
+    .form-select { padding: 0.4rem 0.8rem; border: 1px solid var(--border); border-radius: 0.5rem; font-family: inherit; font-size: 0.85rem; outline: none; }
+    
+    @media (max-width: 900px) { .charts-grid { grid-template-columns: 1fr; } }
+
+    /* ── Tabla de Historial ─────────────────────────────── */
+    .table-container { overflow-x: auto; margin-top: 1rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 0.85rem 1rem; border-bottom: 1px solid var(--border); }
+    th { background: #f8fafc; font-weight: 600; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; }
+    td { font-size: 0.9rem; }
+    .badge-serie { padding: 0.2rem 0.5rem; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 0.3rem; font-size: 0.75rem; font-weight: 700; }
+
+    .empty-state { text-align: center; padding: 2rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div style="font-weight: 700;">🏋️ Gimnasio UNAM</div>
+    <div><%= usuario.nombres %> (Docente)</div>
+  </nav>
+
+  <main class="main">
+    <div class="header-actions">
+      <h1 class="page-title">
+        <span style="font-size: 2rem;">👤</span> 
+        <%= estudiante.nombres %> <%= estudiante.apellidos %>
+      </h1>
+      <a href="/docente/progreso" class="btn-back">← Volver al listado</a>
+    </div>
+
+    <!-- ── Info del Estudiante ──────────────────────────── -->
+    <div class="card">
+      <div class="student-info">
+        <div class="info-item">
+          <div class="info-label">Código</div>
+          <div class="info-value" style="color: var(--accent);"><%= estudiante.codigo %></div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Objetivo Principal</div>
+          <div class="info-value"><%= estudiante.objetivo_principal || 'No definido' %></div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Rutina Activa</div>
+          <div class="info-value"><%= estudiante.rutina_activa %></div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Última Asistencia</div>
+          <div class="info-value">
+            <%= estudiante.ultima_asistencia ? new Date(estudiante.ultima_asistencia).toLocaleDateString('es-MX') : 'Sin registros' %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <% if (resumen && resumen.total_sesiones > 0) { %>
+      
+      <!-- ── Estadísticas y Comparativas ────────────────── -->
+      <div class="summary-grid">
+        <div class="summary-card">
+          <span class="summary-title">Total Entrenamientos</span>
+          <span class="summary-value"><%= resumen.total_sesiones %></span>
+          <span class="summary-desc">Sesiones finalizadas</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-title">Promedio Semanal</span>
+          <span class="summary-value"><%= promedioSemanal %></span>
+          <span class="summary-desc">Entrenamientos / semana</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-title">Tiempo Promedio</span>
+          <span class="summary-value"><%= tiempoPromedio %> <span style="font-size: 0.9rem;">min</span></span>
+          <span class="summary-desc">Por sesión</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-title">Peso Máximo</span>
+          <span class="summary-value"><%= resumen.peso_maximo || 0 %> <span style="font-size: 0.9rem;">kg</span></span>
+          <span class="summary-desc">Récord personal</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-title">Ejercicio Favorito</span>
+          <span class="summary-value" style="font-size: 1.1rem; line-height: 1.6;"><%= resumen.ejercicio_favorito || 'N/A' %></span>
+          <span class="summary-desc">Más veces realizado</span>
+        </div>
+      </div>
+
+      <!-- ── Gráficas (Reutilizadas) ────────────────────── -->
+      <div class="charts-grid">
+        
+        <!-- Líneas: Evolución de Peso -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">Evolución de Peso</h3>
+            <select id="selectEjercicio" class="form-select" onchange="cargarEvolucion()">
+              <% ejercicios.forEach(ej => { %>
+                <option value="<%= ej.id_ejercicio %>"><%= ej.nombre %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div style="position: relative; height: 250px; width: 100%;">
+            <canvas id="lineChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Barras: Entrenamientos por mes -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">Entrenamientos Realizados</h3>
+          </div>
+          <div style="position: relative; height: 250px; width: 100%;">
+            <canvas id="barChart"></canvas>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Historial Detallado ────────────────────────── -->
+      <div class="card">
+        <h2 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">📋 Historial Detallado de Ejercicios</h2>
+        
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Ejercicio</th>
+                <th>Serie</th>
+                <th>Peso</th>
+                <th>Repeticiones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% historial.forEach(reg => { %>
+                <tr>
+                  <td style="color: var(--text-muted); font-size: 0.85rem;">
+                    <%= new Date(reg.fecha).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                  </td>
+                  <td style="font-weight: 600;"><%= reg.ejercicio %></td>
+                  <td><span class="badge-serie">Serie <%= reg.numero_serie %></span></td>
+                  <td><span style="font-weight: 600; color: var(--accent);"><%= reg.peso %> kg</span></td>
+                  <td><%= reg.repeticiones_realizadas %> reps</td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    <% } else { %>
+      <div class="card">
+        <div class="empty-state">
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text);">Sin datos de entrenamiento</h3>
+          <p>Este estudiante aún no ha completado ningún entrenamiento registrado en el sistema.</p>
+        </div>
+      </div>
+    <% } %>
+
+  </main>
+
+  <% if (resumen && resumen.total_sesiones > 0) { %>
+    <script>
+      Chart.defaults.font.family = "'Inter', sans-serif";
+      Chart.defaults.color = "#64748b";
+  
+      // ── Bar Chart (Entrenamientos por mes) ──
+      const mesesData = <%- JSON.stringify(entrenamientosPorMes) %>;
+      const ctxBar = document.getElementById('barChart').getContext('2d');
+      new Chart(ctxBar, {
+        type: 'bar',
+        data: {
+          labels: mesesData.map(d => d.mes),
+          datasets: [{
+            label: 'Sesiones',
+            data: mesesData.map(d => parseInt(d.cantidad)),
+            backgroundColor: '#7c3aed',
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { beginAtZero: true, ticks: { precision: 0 } }
+          }
+        }
+      });
+  
+      // ── Line Chart (Evolución de peso) ──
+      let lineChartInstance = null;
+  
+      async function cargarEvolucion() {
+        const idEjercicio = document.getElementById('selectEjercicio').value;
+        const idEstudiante = <%= estudiante.id_estudiante %>;
+        if (!idEjercicio) return;
+  
+        try {
+          const res = await fetch(`/docente/progreso/api/evolucion/${idEstudiante}/${idEjercicio}`);
+          const data = await res.json();
+  
+          const labels = data.map(d => {
+            const parts = d.fecha.split('-');
+            return `${parts[2]}/${parts[1]}`;
+          });
+          const pesos = data.map(d => parseFloat(d.peso_maximo));
+  
+          if (lineChartInstance) lineChartInstance.destroy();
+  
+          const ctxLine = document.getElementById('lineChart').getContext('2d');
+          lineChartInstance = new Chart(ctxLine, {
+            type: 'line',
+            data: {
+              labels: labels,
+              datasets: [{
+                label: 'Peso Máximo (kg)',
+                data: pesos,
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3,
+                pointBackgroundColor: '#10b981'
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                y: { beginAtZero: true }
+              }
+            }
+          });
+        } catch(e) {
+          console.error("Error al cargar gráfica:", e);
+        }
+      }
+  
+      // Inicializar gráfica al cargar
+      if (document.getElementById('selectEjercicio').options.length > 0) {
+        cargarEvolucion();
+      }
+    </script>
+  <% } %>
+</body>
+</html>

@@ -1,6 +1,7 @@
 const usuarioModel = require('../models/usuarioModel');
 const estudianteModel = require('../models/estudianteModel');
 const recomendacionModel = require('../models/recomendacionModel');
+const incidenciaModel = require('../models/incidenciaModel');
 
 // ── Helper: saludo según la hora local del servidor ───────────────────────────
 const obtenerSaludo = () => {
@@ -30,12 +31,16 @@ const mostrarEstudiante = async (req, res) => {
     const conteoRecomendaciones = perfilFisico
       ? await recomendacionModel.obtenerConteoParaEstudiante(perfilFisico.id_estudiante)
       : 0;
+    const incidenciasAbiertas = perfilFisico
+      ? await incidenciaModel.contarAbiertasPorEstudiante(perfilFisico.id_estudiante)
+      : 0;
 
     res.render('dashboard/estudiante', {
       usuario,
       perfilFisico,
       saludo: obtenerSaludo(),
       conteoRecomendaciones,
+      incidenciasAbiertas,
     });
 
   } catch (err) {
@@ -59,9 +64,12 @@ const mostrarDocente = async (req, res) => {
       return res.redirect('/login');
     }
 
+    const incidenciaStats = await incidenciaModel.obtenerEstadisticas();
+
     res.render('dashboard/docente', {
       usuario,
       saludo: obtenerSaludo(),
+      incidenciaStats,
     });
 
   } catch (err) {

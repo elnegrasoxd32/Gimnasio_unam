@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Punto de Asistencia QR — Gimnasio UNAM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent:       #7c3aed;
+      --accent-dark:  #5b21b6;
+      --bg:           #0f172a;
+      --card:         #1e293b;
+      --text:         #f1f5f9;
+      --text-muted:   #94a3b8;
+      --border:       #334155;
+      --radius:       1rem;
+      --shadow:       0 8px 32px rgba(0,0,0,0.3);
+      --success:      #10b981;
+      --danger:       #ef4444;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+    .navbar { background: #020617; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; border-bottom: 1px solid var(--border); }
+    .navbar-brand { font-weight: 700; font-size: 1.1rem; }
+    .navbar-user { color: var(--text-muted); font-size: 0.9rem; }
+
+    .main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+
+    .qr-container { text-align: center; max-width: 520px; width: 100%; }
+
+    .qr-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    .qr-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .qr-subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; line-height: 1.6; }
+
+    .qr-frame {
+      background: #ffffff;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 0 40px rgba(124, 58, 237, 0.15);
+      min-width: 280px;
+      min-height: 280px;
+      position: relative;
+    }
+    .qr-frame canvas { display: block; }
+
+    .qr-expired-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.92);
+      border-radius: 1rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .qr-expired-overlay.visible { display: flex; }
+    .qr-expired-overlay span { font-size: 2.5rem; }
+    .qr-expired-overlay p { color: #1e293b; font-weight: 700; font-size: 1rem; }
+
+    /* Timer */
+    .timer-section { margin-bottom: 1.5rem; }
+    .timer-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .timer-display {
+      font-size: 2.5rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0.05em;
+      transition: color 0.3s;
+    }
+    .timer-display.ok { color: var(--success); }
+    .timer-display.warn { color: #f59e0b; }
+    .timer-display.danger { color: var(--danger); }
+
+    .timer-bar-track {
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      margin-top: 0.75rem;
+      overflow: hidden;
+    }
+    .timer-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 1s linear, background 0.3s;
+      background: var(--success);
+    }
+
+    /* Buttons */
+    .btn-generate {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.75rem;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 0.6rem;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-generate:hover { background: var(--accent-dark); transform: translateY(-1px); }
+    .btn-generate:active { transform: translateY(0); }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 0.85rem;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-back:hover { border-color: var(--accent); color: var(--text); }
+
+    .info-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: rgba(124, 58, 237, 0.15);
+      color: #a78bfa;
+      padding: 0.35rem 0.8rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .qr-card { padding: 1.5rem 1rem; }
+      .qr-frame { min-width: 220px; min-height: 220px; padding: 1rem; }
+      .timer-display { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand">🏋️ Gimnasio UNAM</div>
+    <div class="navbar-user"><%= usuario.nombres %> (Docente)</div>
+  </nav>
+
+  <main class="main">
+    <div class="qr-container">
+      <div class="qr-card">
+        <h1 class="qr-title">📲 Punto de Asistencia QR</h1>
+        <p class="qr-subtitle">Muestre este código a los estudiantes para que registren su ingreso o salida escaneándolo con la cámara de su celular.</p>
+
+        <div class="qr-frame" id="qrFrame">
+          <canvas id="qrCanvas"></canvas>
+          <div class="qr-expired-overlay" id="expiredOverlay">
+            <span>⏰</span>
+            <p>QR Expirado</p>
+          </div>
+        </div>
+
+        <div class="timer-section">
+          <div class="timer-label">Tiempo restante</div>
+          <div class="timer-display ok" id="timerDisplay">--:--</div>
+          <div class="timer-bar-track">
+            <div class="timer-bar-fill" id="timerBar" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <button class="btn-generate" id="btnGenerate" onclick="generarQR()">
+          🔄 Generar nuevo QR
+        </button>
+
+        <div class="info-badge">🔒 Token temporal — se renueva cada 5 minutos</div>
+      </div>
+
+      <a href="/dashboard/docente" class="btn-back">← Volver al Dashboard</a>
+    </div>
+  </main>
+
+  <script>
+    const TOTAL_SECONDS = 5 * 60;
+    let timerInterval = null;
+    let expiresAt = 0;
+
+    const timerDisplay = document.getElementById('timerDisplay');
+    const timerBar = document.getElementById('timerBar');
+    const expiredOverlay = document.getElementById('expiredOverlay');
+    const qrCanvas = document.getElementById('qrCanvas');
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const s = (seconds % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function updateTimer() {
+      const remaining = Math.max(0, Math.floor((expiresAt - Date.now()) / 1000));
+      const pct = (remaining / TOTAL_SECONDS) * 100;
+
+      timerDisplay.textContent = formatTime(remaining);
+      timerBar.style.width = pct + '%';
+
+      // Color coding
+      timerDisplay.className = 'timer-display';
+      if (remaining > 120) {
+        timerDisplay.classList.add('ok');
+        timerBar.style.background = '#10b981';
+      } else if (remaining > 30) {
+        timerDisplay.classList.add('warn');
+        timerBar.style.background = '#f59e0b';
+      } else {
+        timerDisplay.classList.add('danger');
+        timerBar.style.background = '#ef4444';
+      }
+
+      if (remaining <= 0) {
+        clearInterval(timerInterval);
+        timerDisplay.textContent = '00:00';
+        expiredOverlay.classList.add('visible');
+        // Auto-regenerar
+        setTimeout(() => generarQR(), 500);
+      }
+    }
+
+    async function generarQR() {
+      try {
+        const res = await fetch('/docente/api/asistencia/qr-token');
+        if (!res.ok) throw new Error('Error al obtener token');
+        const data = await res.json();
+
+        expiresAt = data.expiresAt;
+        expiredOverlay.classList.remove('visible');
+
+        // Build URL
+        const baseUrl = window.location.origin;
+        const qrUrl = `${baseUrl}/estudiante/asistencia/qr-scan?token=${data.token}`;
+
+        // Generate QR
+        await QRCode.toCanvas(qrCanvas, qrUrl, {
+          width: 250,
+          margin: 0,
+          color: { dark: '#0f172a', light: '#ffffff' }
+        });
+
+        // Start timer
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        updateTimer();
+
+      } catch (err) {
+        console.error('Error generando QR:', err);
+        timerDisplay.textContent = 'Error';
+        timerDisplay.className = 'timer-display danger';
+      }
+    }
+
+    // Generate on page load
+    generarQR();
+  </script>
+</body>
+</html>

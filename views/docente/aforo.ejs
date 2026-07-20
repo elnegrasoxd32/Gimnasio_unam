@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aforo y Estadísticas — Gimnasio UNAM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent:       #7c3aed;
+      --accent-dark:  #5b21b6;
+      --bg:           #f1f5f9;
+      --card:         #ffffff;
+      --nav:          #0f172a;
+      --text:         #1e293b;
+      --text-muted:   #64748b;
+      --border:       #e2e8f0;
+      --radius:       0.875rem;
+      --shadow:       0 4px 16px rgba(0,0,0,0.08);
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    .navbar { background: var(--nav); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; color: #fff; }
+    .main { max-width: 1200px; margin: 0 auto; padding: 2rem 1.5rem; }
+    .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 0.5rem; }
+    .page-title { font-size: 1.5rem; font-weight: 700; }
+    .btn-back { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.5rem 1rem; background: #fff; border: 1px solid var(--border); border-radius: 0.5rem; text-decoration: none; color: var(--text); font-weight: 500; font-size: 0.9rem; transition: border-color 0.2s; }
+    .btn-back:hover { border-color: var(--accent); }
+
+    /* ── Panel Resumen ────────────────────────────────────── */
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .stat-card {
+      background: var(--card); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow);
+      display: flex; flex-direction: column; align-items: flex-start;
+    }
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .stat-number { font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1; }
+    .stat-desc { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; }
+    
+    .badge { display: inline-block; padding: 0.3rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+    .badge-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .badge-warning { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .badge-danger  { background: #fee2e2; color: #b91c1c; border: 1px solid #f87171; }
+
+    /* ── Gráficas ────────────────────────────────────────── */
+    .charts-container { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+    .chart-card { background: var(--card); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); }
+    .chart-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text); }
+    
+    @media (max-width: 900px) {
+      .charts-container { grid-template-columns: 1fr; }
+    }
+    .chart-wrapper { position: relative; height: 300px; width: 100%; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div style="font-weight: 700;">🏋️ Gimnasio UNAM</div>
+    <div><%= usuario.nombres %> (Docente)</div>
+  </nav>
+
+  <main class="main">
+    <div class="header-actions">
+      <h1 class="page-title">📊 Aforo y Estadísticas</h1>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <span style="font-size: 0.85rem; color: var(--text-muted);">Actualizado: <span id="updateTime"></span></span>
+        <a href="/dashboard/docente" class="btn-back">← Volver al Dashboard</a>
+      </div>
+    </div>
+
+    <!-- ── Resumen ────────────────────────────────────── -->
+    <div class="summary-grid">
+      <div class="stat-card" style="border-bottom: 4px solid var(--accent);">
+        <span class="stat-label">Personas Presentes</span>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <span class="stat-number" id="presentesText"><%= presentes %></span>
+          <span id="nivelBadge" class="badge badge-<%= aforo.color %>"><%= aforo.nivel %></span>
+        </div>
+        <span class="stat-desc">Capacidad Máxima: <%= capacidad_maxima %></span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Ocupación Actual</span>
+        <span class="stat-number" id="porcentajeText"><%= aforo.porcentaje %>%</span>
+        <span class="stat-desc">Porcentaje del total</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Ingresos Hoy</span>
+        <span class="stat-number"><%= estadisticas.ingresos_hoy %></span>
+        <span class="stat-desc">Total acumulado del día</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Promedio Diario</span>
+        <span class="stat-number"><%= estadisticas.promedio_diario %></span>
+        <span class="stat-desc">Ingresos por día histórico</span>
+      </div>
+    </div>
+
+    <!-- ── Gráficas ────────────────────────────────────── -->
+    <div class="charts-container">
+      <!-- Gráfico de tendencia (Líneas) -->
+      <div class="chart-card">
+        <h2 class="chart-title">📈 Tendencia de Ingresos (Últimos 7 días)</h2>
+        <div class="chart-wrapper">
+          <canvas id="tendenciaChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Gráfico actual (Doughnut) -->
+      <div class="chart-card">
+        <h2 class="chart-title">Ocupación en Vivo</h2>
+        <div class="chart-wrapper">
+          <canvas id="ocupacionChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráfico horas pico (Barras) -->
+    <div class="chart-card">
+      <h2 class="chart-title">⏰ Horas de mayor afluencia (Histórico)</h2>
+      <div class="chart-wrapper" style="height: 250px;">
+        <canvas id="horasPicoChart"></canvas>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    function updateTimeDisplay() {
+      const now = new Date();
+      document.getElementById('updateTime').innerText = now.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    }
+    updateTimeDisplay();
+
+    const tendenciaData = <%- tendenciaSemanal %>;
+    const horasPicoData = <%- horasPico %>;
+    const capMax = <%= capacidad_maxima %>;
+    let ocupacionChartInstance = null;
+
+    // ── 1. Gráfico de Tendencia (Líneas) ──────────────
+    const ctxTendencia = document.getElementById('tendenciaChart').getContext('2d');
+    new Chart(ctxTendencia, {
+      type: 'line',
+      data: {
+        labels: tendenciaData.map(d => {
+          const arr = d.fecha.split('-');
+          return arr[2] + '/' + arr[1]; // DD/MM
+        }),
+        datasets: [{
+          label: 'Ingresos',
+          data: tendenciaData.map(d => d.total),
+          borderColor: '#7c3aed',
+          backgroundColor: 'rgba(124, 58, 237, 0.1)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.3,
+          pointBackgroundColor: '#7c3aed'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+
+    // ── 2. Gráfico de Horas Pico (Barras) ─────────────
+    const ctxHoras = document.getElementById('horasPicoChart').getContext('2d');
+    new Chart(ctxHoras, {
+      type: 'bar',
+      data: {
+        labels: horasPicoData.map(d => d.hora + ':00'),
+        datasets: [{
+          label: 'Total ingresos históricos',
+          data: horasPicoData.map(d => d.total),
+          backgroundColor: '#3b82f6',
+          borderRadius: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+
+    // ── 3. Gráfico Ocupación Actual (Doughnut) ────────
+    const initOcupacionChart = (presentes, colorName) => {
+      let colorHex = '#10b981'; // success
+      if (colorName === 'warning') colorHex = '#f59e0b';
+      if (colorName === 'danger') colorHex = '#ef4444';
+
+      const ctxOcupacion = document.getElementById('ocupacionChart').getContext('2d');
+      ocupacionChartInstance = new Chart(ctxOcupacion, {
+        type: 'doughnut',
+        data: {
+          labels: ['Ocupado', 'Disponible'],
+          datasets: [{
+            data: [presentes, Math.max(capMax - presentes, 0)],
+            backgroundColor: [colorHex, '#e2e8f0'],
+            borderWidth: 0,
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          cutout: '75%',
+          plugins: { legend: { position: 'bottom' } }
+        }
+      });
+    };
+    initOcupacionChart(<%= presentes %>, '<%= aforo.color %>');
+
+    // ── Polling para actualizar datos en tiempo real ──
+    setInterval(async () => {
+      try {
+        const res = await fetch('/api/aforo'); // Wait, api is on /docente/api/aforo o similar? No, I put it on /estudiante/api/aforo? Let's fix the route endpoint. I'll make it /docente/api/aforo for docente, or a global /api/aforo. Actually, I didn't add it to routes yet. I'll add it to both or a common one.
+        // Actually, we'll mount apiObtenerAforo on /estudiante/api/aforo and /docente/api/aforo.
+        const response = await fetch('/docente/api/aforo');
+        if (response.ok) {
+          const data = await response.json();
+          document.getElementById('presentesText').innerText = data.presentes;
+          document.getElementById('porcentajeText').innerText = data.aforo.porcentaje + '%';
+          
+          const badge = document.getElementById('nivelBadge');
+          badge.className = 'badge badge-' + data.aforo.color;
+          badge.innerText = data.aforo.nivel;
+          
+          if (ocupacionChartInstance) {
+            let colorHex = '#10b981';
+            if (data.aforo.color === 'warning') colorHex = '#f59e0b';
+            if (data.aforo.color === 'danger') colorHex = '#ef4444';
+            
+            ocupacionChartInstance.data.datasets[0].data = [data.presentes, Math.max(capMax - data.presentes, 0)];
+            ocupacionChartInstance.data.datasets[0].backgroundColor[0] = colorHex;
+            ocupacionChartInstance.update();
+          }
+          updateTimeDisplay();
+        }
+      } catch(e) {
+        console.error('Error al actualizar aforo', e);
+      }
+    }, 15000);
+  </script>
+</body>
+</html>

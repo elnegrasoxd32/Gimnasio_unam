@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asistencia Registrada — Gimnasio UNAM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --accent:       #7c3aed;
+      --bg:           #f1f5f9;
+      --card:         #ffffff;
+      --nav:          #0f172a;
+      --text:         #1e293b;
+      --text-muted:   #64748b;
+      --border:       #e2e8f0;
+      --radius:       1rem;
+      --shadow:       0 8px 32px rgba(0,0,0,0.08);
+      --success:      #10b981;
+      --success-bg:   #ecfdf5;
+      --info:         #3b82f6;
+      --info-bg:      #eff6ff;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+    .navbar { background: var(--nav); display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; color: #fff; }
+    .navbar-brand { font-weight: 700; }
+
+    .main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+
+    .success-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 3rem 2.5rem;
+      box-shadow: var(--shadow);
+      text-align: center;
+      max-width: 480px;
+      width: 100%;
+      animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .success-icon {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+      animation: pop 0.4s ease-out 0.2s both;
+    }
+    .success-icon.entrada { background: var(--success-bg); border: 3px solid var(--success); }
+    .success-icon.salida  { background: var(--info-bg); border: 3px solid var(--info); }
+
+    @keyframes pop {
+      0%   { transform: scale(0.5); opacity: 0; }
+      70%  { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .success-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .success-subtitle { color: var(--text-muted); margin-bottom: 2rem; font-size: 0.95rem; }
+
+    .tipo-badge {
+      display: inline-block;
+      padding: 0.3rem 1rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 2rem;
+    }
+    .tipo-badge.entrada { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .tipo-badge.salida  { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      text-align: left;
+      margin-bottom: 2rem;
+    }
+    .detail-item {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 0.6rem;
+      padding: 0.85rem 1rem;
+    }
+    .detail-label { font-size: 0.7rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.2rem; }
+    .detail-value { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+
+    .btn-dashboard {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 0.6rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .btn-dashboard:hover { background: #5b21b6; transform: translateY(-1px); }
+
+    @media (max-width: 500px) {
+      .success-card { padding: 2rem 1.25rem; }
+      .details-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand">🏋️ Gimnasio UNAM</div>
+    <div style="color: #94a3b8;"><%= usuario.nombres %></div>
+  </nav>
+
+  <main class="main">
+    <div class="success-card">
+      <div class="success-icon <%= tipo === 'Entrada' ? 'entrada' : 'salida' %>">
+        <%= tipo === 'Entrada' ? '🟢' : '🔵' %>
+      </div>
+
+      <h1 class="success-title">¡Asistencia Registrada!</h1>
+      <p class="success-subtitle">Tu registro se ha completado exitosamente.</p>
+
+      <span class="tipo-badge <%= tipo === 'Entrada' ? 'entrada' : 'salida' %>">
+        <%= tipo === 'Entrada' ? '📥 Entrada registrada' : '📤 Salida registrada' %>
+      </span>
+
+      <div class="details-grid">
+        <div class="detail-item">
+          <div class="detail-label">Estudiante</div>
+          <div class="detail-value"><%= usuario.nombres %></div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Código</div>
+          <div class="detail-value" style="color: #7c3aed;"><%= usuario.codigo %></div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Fecha</div>
+          <div class="detail-value"><%= fecha.toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Hora</div>
+          <div class="detail-value"><%= fecha.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) %></div>
+        </div>
+      </div>
+
+      <a href="/dashboard/estudiante" class="btn-dashboard">← Volver al Dashboard</a>
+    </div>
+  </main>
+</body>
+</html>
