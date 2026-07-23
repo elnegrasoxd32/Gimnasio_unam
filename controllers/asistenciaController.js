@@ -151,7 +151,7 @@ const registrarAsistenciaQR = async (req, res) => {
       await asistenciaModel.registrarSalida(asistenciaActiva.id_asistencia);
       tipo = 'Salida';
     } else {
-      await asistenciaModel.registrarIngreso(id_estudiante);
+      await asistenciaModel.registrarIngreso(id_estudiante, 'QR');
     }
     
     // Mostrar página elegante de confirmación

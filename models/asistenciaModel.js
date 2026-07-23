@@ -17,16 +17,17 @@ const obtenerAsistenciaAbierta = async (id_estudiante) => {
 };
 
 /**
- * Registra un nuevo ingreso manual para el estudiante.
+ * Registra un nuevo ingreso para el estudiante.
  * @param {number} id_estudiante 
+ * @param {string} metodo 'MANUAL' o 'QR'
  */
-const registrarIngreso = async (id_estudiante) => {
+const registrarIngreso = async (id_estudiante, metodo = 'MANUAL') => {
   const query = `
     INSERT INTO asistencias (id_estudiante, metodo) 
-    VALUES ($1, 'MANUAL') 
+    VALUES ($1, $2) 
     RETURNING *;
   `;
-  const { rows } = await pool.query(query, [id_estudiante]);
+  const { rows } = await pool.query(query, [id_estudiante, metodo]);
   return rows[0];
 };
 

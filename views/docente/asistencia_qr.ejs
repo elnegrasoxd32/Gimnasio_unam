@@ -1,35 +1,78 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Punto de Asistencia QR — Gimnasio UNAM</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --accent:       #7c3aed;
-      --accent-dark:  #5b21b6;
-      --bg:           #0f172a;
-      --card:         #1e293b;
-      --text:         #f1f5f9;
-      --text-muted:   #94a3b8;
-      --border:       #334155;
-      --radius:       1rem;
-      --shadow:       0 8px 32px rgba(0,0,0,0.3);
-      --success:      #10b981;
-      --danger:       #ef4444;
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
 
-    .navbar { background: #020617; display: flex; align-items: center; justify-content: space-between; padding: 0 2rem; height: 64px; border-bottom: 1px solid var(--border); }
-    .navbar-brand { font-weight: 700; font-size: 1.1rem; }
-    .navbar-user { color: var(--text-muted); font-size: 0.9rem; }
+    :root {
+      --accent: #7c3aed;
+      --accent-dark: #5b21b6;
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --border: #334155;
+      --radius: 1rem;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --success: #10b981;
+      --danger: #ef4444;
+    }
 
-    .main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-    .qr-container { text-align: center; max-width: 520px; width: 100%; }
+    .navbar {
+      background: #020617;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 64px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+
+    .navbar-user {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .qr-container {
+      text-align: center;
+      max-width: 520px;
+      width: 100%;
+    }
 
     .qr-card {
       background: var(--card);
@@ -40,8 +83,18 @@
       margin-bottom: 1.5rem;
     }
 
-    .qr-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem; }
-    .qr-subtitle { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; line-height: 1.6; }
+    .qr-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+
+    .qr-subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
 
     .qr-frame {
       background: #ffffff;
@@ -56,12 +109,15 @@
       min-height: 280px;
       position: relative;
     }
-    .qr-frame canvas { display: block; }
+
+    .qr-frame canvas {
+      display: block;
+    }
 
     .qr-expired-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(255,255,255,0.92);
+      background: rgba(255, 255, 255, 0.92);
       border-radius: 1rem;
       display: none;
       align-items: center;
@@ -69,13 +125,35 @@
       flex-direction: column;
       gap: 0.5rem;
     }
-    .qr-expired-overlay.visible { display: flex; }
-    .qr-expired-overlay span { font-size: 2.5rem; }
-    .qr-expired-overlay p { color: #1e293b; font-weight: 700; font-size: 1rem; }
+
+    .qr-expired-overlay.visible {
+      display: flex;
+    }
+
+    .qr-expired-overlay span {
+      font-size: 2.5rem;
+    }
+
+    .qr-expired-overlay p {
+      color: #1e293b;
+      font-weight: 700;
+      font-size: 1rem;
+    }
 
     /* Timer */
-    .timer-section { margin-bottom: 1.5rem; }
-    .timer-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+    .timer-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .timer-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
     .timer-display {
       font-size: 2.5rem;
       font-weight: 800;
@@ -83,9 +161,18 @@
       letter-spacing: 0.05em;
       transition: color 0.3s;
     }
-    .timer-display.ok { color: var(--success); }
-    .timer-display.warn { color: #f59e0b; }
-    .timer-display.danger { color: var(--danger); }
+
+    .timer-display.ok {
+      color: var(--success);
+    }
+
+    .timer-display.warn {
+      color: #f59e0b;
+    }
+
+    .timer-display.danger {
+      color: var(--danger);
+    }
 
     .timer-bar-track {
       width: 100%;
@@ -95,6 +182,7 @@
       margin-top: 0.75rem;
       overflow: hidden;
     }
+
     .timer-bar-fill {
       height: 100%;
       border-radius: 3px;
@@ -118,8 +206,15 @@
       cursor: pointer;
       transition: background 0.2s, transform 0.15s;
     }
-    .btn-generate:hover { background: var(--accent-dark); transform: translateY(-1px); }
-    .btn-generate:active { transform: translateY(0); }
+
+    .btn-generate:hover {
+      background: var(--accent-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-generate:active {
+      transform: translateY(0);
+    }
 
     .btn-back {
       display: inline-flex;
@@ -135,7 +230,11 @@
       font-size: 0.85rem;
       transition: border-color 0.2s, color 0.2s;
     }
-    .btn-back:hover { border-color: var(--accent); color: var(--text); }
+
+    .btn-back:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
 
     .info-badge {
       display: inline-flex;
@@ -151,23 +250,37 @@
     }
 
     @media (max-width: 600px) {
-      .qr-card { padding: 1.5rem 1rem; }
-      .qr-frame { min-width: 220px; min-height: 220px; padding: 1rem; }
-      .timer-display { font-size: 2rem; }
+      .qr-card {
+        padding: 1.5rem 1rem;
+      }
+
+      .qr-frame {
+        min-width: 220px;
+        min-height: 220px;
+        padding: 1rem;
+      }
+
+      .timer-display {
+        font-size: 2rem;
+      }
     }
   </style>
 </head>
+
 <body>
   <nav class="navbar">
     <div class="navbar-brand">🏋️ Gimnasio UNAM</div>
-    <div class="navbar-user"><%= usuario.nombres %> (Docente)</div>
+    <div class="navbar-user">
+      <%= usuario.nombres %> (Docente)
+    </div>
   </nav>
 
   <main class="main">
     <div class="qr-container">
       <div class="qr-card">
         <h1 class="qr-title">📲 Punto de Asistencia QR</h1>
-        <p class="qr-subtitle">Muestre este código a los estudiantes para que registren su ingreso o salida escaneándolo con la cámara de su celular.</p>
+        <p class="qr-subtitle">Muestre este código a los estudiantes para que registren su ingreso o salida escaneándolo
+          con la cámara de su celular.</p>
 
         <div class="qr-frame" id="qrFrame">
           <canvas id="qrCanvas"></canvas>
@@ -254,11 +367,13 @@
         const baseUrl = window.location.origin;
         const qrUrl = `${baseUrl}/estudiante/asistencia/qr-scan?token=${data.token}`;
 
-        // Generate QR
-        await QRCode.toCanvas(qrCanvas, qrUrl, {
-          width: 250,
-          margin: 0,
-          color: { dark: '#0f172a', light: '#ffffff' }
+        // Generate QR using QRious
+        new QRious({
+          element: qrCanvas,
+          value: qrUrl,
+          size: 250,
+          foreground: '#0f172a',
+          background: '#ffffff'
         });
 
         // Start timer
@@ -277,4 +392,5 @@
     generarQR();
   </script>
 </body>
+
 </html>
